@@ -1,18 +1,25 @@
+import { ScrollAwareNavbar } from "@/components/home/scroll-aware-navbar";
+import { Hero } from "@/components/home/hero";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { Numbers } from "@/components/home/numbers";
+import { VenuesGrid } from "@/components/home/venues-grid";
+import { Testimonials } from "@/components/home/testimonials";
+import { Faq } from "@/components/home/faq";
+import { Footer } from "@/components/home/footer";
+
 export default function Home() {
   return (
-    <main className="min-h-dvh flex items-center justify-center px-6">
-      <div className="text-center max-w-md">
-        <p className="text-xs uppercase tracking-widest font-medium text-muted-foreground mb-4">
-          we.wedme
-        </p>
-        <h1 className="font-display text-4xl md:text-5xl font-medium text-foreground mb-6 tracking-editorial">
-          Setup concluído.
-        </h1>
-        <p className="text-base text-muted-foreground leading-relaxed">
-          Fase 0 do plano finalizada. A home institucional será construída na
-          Fase 5.
-        </p>
-      </div>
-    </main>
+    <>
+      <ScrollAwareNavbar />
+      <main>
+        <Hero />
+        <HowItWorks />
+        <Numbers />
+        <VenuesGrid />
+        <Testimonials />
+        <Faq />
+      </main>
+      <Footer />
+    </>
   );
 }
