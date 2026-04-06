@@ -4,127 +4,240 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   we.wedme — Design Tokens (paleta editorial Aman/Dior/Loro Piana)
+   ============================================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand-wine: var(--brand-wine);
+  --color-brand-rose: var(--brand-rose);
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
+  --font-heading: var(--font-display), ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
+  --radius-3xl: 1rem;
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Paleta we.wedme — briefing §3.1 */
+  --background: #FEFAF3;          /* creme quente */
+  --foreground: #0C0106;          /* preto quase-bordeaux */
+  --card: #FFFFFF;
+  --card-foreground: #0C0106;
+  --popover: #FFFFFF;
+  --popover-foreground: #0C0106;
+  --primary: #7F0E4A;             /* bordeaux */
+  --primary-foreground: #FFFFFF;
+  --secondary: #FAEDD2;           /* bege quente */
+  --secondary-foreground: #0C0106;
+  --muted: #FAEDD2;
+  --muted-foreground: #777777;
+  --accent: #EBE8E9;              /* blush */
+  --accent-foreground: #0C0106;
+  --destructive: #B0342A;
+  --border: #B39EA9;              /* mauve */
+  --input: #B39EA9;
+  --ring: #7F0E4A;
+
+  --brand-wine: #420926;          /* hover do botão primário */
+  --brand-rose: #C45F9B;          /* acento secundário, ornamentos */
+
+  --radius: 0.25rem;
+
+  /* Overlays sobre foto (briefing §3.1) */
+  --overlay-dark-60: rgba(12, 1, 6, 0.60);
+  --overlay-dark-80: rgba(12, 1, 6, 0.80);
 }
 
+/* Sem dark mode — protótipo é só light, mas mantido para shadcn não quebrar */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #FEFAF3;
+  --foreground: #0C0106;
+  --card: #FFFFFF;
+  --card-foreground: #0C0106;
+  --popover: #FFFFFF;
+  --popover-foreground: #0C0106;
+  --primary: #7F0E4A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FAEDD2;
+  --secondary-foreground: #0C0106;
+  --muted: #FAEDD2;
+  --muted-foreground: #777777;
+  --accent: #EBE8E9;
+  --accent-foreground: #0C0106;
+  --destructive: #B0342A;
+  --border: #B39EA9;
+  --input: #B39EA9;
+  --ring: #7F0E4A;
+  --brand-wine: #420926;
+  --brand-rose: #C45F9B;
 }
 
+/* ============================================================
+   Mobile-first base (princípios inegociáveis do plano)
+   ============================================================ */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  *::before,
+  *::after {
+    @apply border-border;
   }
+
+  html,
   body {
-    @apply bg-background text-foreground;
+    /* sem horizontal scroll, NUNCA */
+    overflow-x: hidden;
   }
+
   html {
-    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  /* previne auto-zoom do iOS Safari ao focar inputs (font-size < 16px) */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  /* foco visível acessível em qualquer interativo */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* respeita preferência do usuário por menos movimento */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ============================================================
+   Utilitários mobile-first — safe areas e dynamic viewport
+   ============================================================ */
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  .safe-px {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* dynamic viewport units — funcionam com barra de URL do iOS Safari */
+  .h-dvh {
+    height: 100dvh;
+  }
+  .h-svh {
+    height: 100svh;
+  }
+  .h-lvh {
+    height: 100lvh;
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+  .min-h-svh {
+    min-height: 100svh;
+  }
+  .min-h-lvh {
+    min-height: 100lvh;
+  }
+
+  /* helpers de overlay sobre foto (briefing §3.1) */
+  .overlay-dark-60 {
+    background-color: var(--overlay-dark-60);
+  }
+  .overlay-dark-80 {
+    background-color: var(--overlay-dark-80);
+  }
+
+  /* tracking editorial usado em headings display */
+  .tracking-editorial {
+    letter-spacing: 0.01em;
+  }
+}
+
+/* ============================================================
+   Animações sutis (duração curta, transform/opacity only)
+   ============================================================ */
+@keyframes pulse-ornament {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+.animate-pulse-ornament {
+  animation: pulse-ornament 2.5s ease-in-out infinite;
+}
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.animate-typing-dot {
+  animation: typing-dot 1.4s ease-in-out infinite;
 }
