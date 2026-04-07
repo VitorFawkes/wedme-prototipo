@@ -203,7 +203,7 @@ const REPLIES = {
     "E quantos convidados? Pode ser redondo: uns 80, entre 100 e 150, ou 'mini wedding'.",
   guests_extracted: "Anotado. Isso já me ajuda a montar o caminho certo.",
   transition:
-    "Perfeito. Agora vem a pergunta que mais importa de todas...",
+    "Perfeito, tudo anotado.",
   clarification: "Pode reformular pra eu entender melhor?",
 };
 

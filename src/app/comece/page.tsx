@@ -594,7 +594,7 @@ export default function ComecePage() {
       {/* Conversa */}
       <div
         ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto pt-20 md:pt-24 pb-40 md:pb-32 safe-px"
+        className="flex-1 overflow-y-auto pt-20 md:pt-24 pb-52 md:pb-40 safe-px"
       >
         <div className="max-w-2xl mx-auto px-4 md:px-0 flex flex-col gap-4 md:gap-5">
           {/* Saudação fixa inicial */}

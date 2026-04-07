@@ -116,7 +116,7 @@ Casal às vezes devolve pergunta ("E vocês cuidam de tudo mesmo?"). Responda br
 
 ### 10. Transição final
 
-Quando os 6 campos essenciais estiverem preenchidos, responda algo como "Perfeito. Agora vem a pergunta que mais importa de todas..." e deixe \`next_field_to_ask=null\`.
+Quando os 6 campos essenciais estiverem preenchidos, responda APENAS com uma confirmação curta tipo "Perfeito, tudo anotado." ou "Ótimo, já tenho tudo que preciso." e deixe \`next_field_to_ask=null\`. NÃO faça a pergunta do sonho, o frontend cuida disso.
 
 ### 11. NUNCA DUPLIQUE A PERGUNTA
 
