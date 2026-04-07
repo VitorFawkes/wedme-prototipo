@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, X, Clock } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { MessageCircle, X, Clock, Minus, GripVertical } from "lucide-react";
+import { motion, AnimatePresence, useMotionValue, type PanInfo } from "framer-motion";
 import {
   Drawer,
   DrawerContent,
@@ -39,11 +39,130 @@ const QUICK_QUESTIONS = [
   "Posso trocar um profissional depois?",
 ] as const;
 
+const STORAGE_KEY = "specialist-widget:state";
+const DRAG_THRESHOLD = 4; // px — acima disso consideramos drag, não click
+
+type PersistedState = {
+  x: number;
+  y: number;
+  minimized: boolean;
+};
+
+function loadPersisted(): PersistedState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PersistedState;
+    if (
+      typeof parsed.x !== "number" ||
+      typeof parsed.y !== "number" ||
+      typeof parsed.minimized !== "boolean"
+    ) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 export function SpecialistWidget() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const [bounds, setBounds] = useState<{
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+  } | null>(null);
+  const fabRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const didDragRef = useRef(false);
   const partner_1_name = useCouple((s) => s.partner_1_name);
+
+  // Carrega posição e estado persistidos no mount (client-only).
+  useEffect(() => {
+    const persisted = loadPersisted();
+    if (persisted) {
+      x.set(persisted.x);
+      y.set(persisted.y);
+      setMinimized(persisted.minimized);
+    }
+  }, [x, y]);
+
+  // Calcula limites do drag dentro da viewport, recalcula em resize.
+  useEffect(() => {
+    function computeBounds() {
+      const el = fabRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // Posição "home" (bottom-right ou bottom-left) já definida por CSS.
+      // Offsets são relativos a essa posição home.
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // Estilo posiciona o elemento via classes; usamos o rect atual (sem translate)
+      // como origem. Os bounds são quanto o usuário pode arrastar a partir dali.
+      const homeLeft = rect.left - x.get();
+      const homeTop = rect.top - y.get();
+      setBounds({
+        left: -homeLeft + 8,
+        top: -homeTop + 8,
+        right: vw - homeLeft - rect.width - 8,
+        bottom: vh - homeTop - rect.height - 8,
+      });
+    }
+    computeBounds();
+    window.addEventListener("resize", computeBounds);
+    return () => window.removeEventListener("resize", computeBounds);
+    // Recalcula também quando minimizado muda (tamanho do elemento muda).
+  }, [minimized, x, y]);
+
+  function persist(next: Partial<PersistedState>) {
+    if (typeof window === "undefined") return;
+    const current: PersistedState = {
+      x: x.get(),
+      y: y.get(),
+      minimized,
+      ...next,
+    };
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    } catch {
+      /* ignore quota errors */
+    }
+  }
+
+  function handleDragEnd(_: unknown, info: PanInfo) {
+    if (
+      Math.abs(info.offset.x) > DRAG_THRESHOLD ||
+      Math.abs(info.offset.y) > DRAG_THRESHOLD
+    ) {
+      didDragRef.current = true;
+    }
+    persist({ x: x.get(), y: y.get() });
+  }
+
+  function handleFabClick() {
+    // Se acabamos de arrastar, ignora o click sintético subsequente.
+    if (didDragRef.current) {
+      didDragRef.current = false;
+      return;
+    }
+    setOpen(true);
+  }
+
+  function toggleMinimized(e: React.MouseEvent) {
+    e.stopPropagation();
+    setMinimized((prev) => {
+      const next = !prev;
+      persist({ minimized: next });
+      return next;
+    });
+  }
 
   function handleSend() {
     if (!message.trim()) return;
@@ -63,39 +182,98 @@ export function SpecialistWidget() {
 
   return (
     <>
-      {/* FAB - posicionamento defensivo:
-          - Mobile: bottom-LEFT pra n\u00e3o cobrir nenhum CTA/bot\u00e3o do conte\u00fado.
-            Os CTAs principais (Ver pacotes, Quero este, etc) sempre ficam
-            no canto direito ou full-width, ent\u00e3o left fica livre.
-            Usamos bottom-24 pra ficar acima do bottom sheet sticky de
-            pre\u00e7o (que tem ~80px) ou progress footer (~80px).
-          - Desktop: bottom-right cl\u00e1ssico (h\u00e1 espa\u00e7o de sobra). */}
+      {/* FAB - posicionamento defensivo inicial:
+          - Mobile: bottom-left (bottom-24 pra ficar acima de progress footer/sticky CTAs)
+          - Desktop: bottom-right clássico
+          O usuário pode arrastar pra onde quiser (posição persistida em localStorage)
+          e minimizar pra só o ícone. */}
       <motion.div
+        ref={fabRef}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.4 }}
+        drag
+        dragMomentum={false}
+        dragElastic={0}
+        dragConstraints={bounds ?? undefined}
+        onDragEnd={handleDragEnd}
+        style={{ x, y, touchAction: "none" }}
         className="fixed z-40 safe-bottom bottom-24 left-4 md:bottom-6 md:right-6 md:left-auto"
       >
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Falar com um especialista"
-          className="group inline-flex items-center gap-2 min-h-12 pl-4 pr-5 rounded-full bg-foreground text-background shadow-lg hover:bg-brand-wine transition-all duration-200 hover:pr-6"
+        <div
+          className={`group relative flex items-center rounded-full bg-foreground text-background shadow-lg hover:bg-brand-wine transition-colors duration-200 ${
+            minimized ? "size-12" : "min-h-12 pl-2 pr-1"
+          }`}
         >
-          <MessageCircle className="size-5" aria-hidden="true" />
-          <span
-            aria-hidden="true"
-            className="text-sm font-medium tracking-wide hidden sm:inline"
+          {/* Handle de drag (só quando expandido) */}
+          {!minimized && (
+            <span
+              aria-hidden="true"
+              className="inline-flex items-center justify-center size-8 text-background/60 cursor-grab active:cursor-grabbing select-none"
+              title="Arrastar"
+            >
+              <GripVertical className="size-4" />
+            </span>
+          )}
+
+          {/* Botão principal — abre drawer */}
+          <button
+            type="button"
+            onClick={handleFabClick}
+            aria-label="Falar com um especialista"
+            className={`inline-flex items-center gap-2 ${
+              minimized
+                ? "size-12 justify-center rounded-full cursor-grab active:cursor-grabbing"
+                : "min-h-12 pr-3"
+            }`}
           >
-            Falar com especialista
-          </span>
-          <span
-            aria-hidden="true"
-            className="text-sm font-medium tracking-wide sm:hidden"
-          >
-            Especialista
-          </span>
-        </button>
+            <MessageCircle className="size-5" aria-hidden="true" />
+            {!minimized && (
+              <>
+                <span
+                  aria-hidden="true"
+                  className="text-sm font-medium tracking-wide hidden sm:inline"
+                >
+                  Falar com especialista
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="text-sm font-medium tracking-wide sm:hidden"
+                >
+                  Especialista
+                </span>
+              </>
+            )}
+          </button>
+
+          {/* Botão minimizar/expandir */}
+          {!minimized && (
+            <button
+              type="button"
+              onClick={toggleMinimized}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Minimizar"
+              className="inline-flex items-center justify-center size-8 mr-1 rounded-full text-background/70 hover:text-background hover:bg-background/10 transition-colors"
+            >
+              <Minus className="size-4" />
+            </button>
+          )}
+
+          {/* Quando minimizado, botão flutuante pequeno pra expandir de volta */}
+          {minimized && (
+            <button
+              type="button"
+              onClick={toggleMinimized}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label="Expandir"
+              className="absolute -top-1 -right-1 inline-flex items-center justify-center size-5 rounded-full bg-background text-foreground border border-foreground/20 shadow-sm hover:scale-110 transition-transform"
+            >
+              <span aria-hidden="true" className="text-[10px] leading-none font-bold">
+                +
+              </span>
+            </button>
+          )}
+        </div>
       </motion.div>
 
       {/* Drawer */}
