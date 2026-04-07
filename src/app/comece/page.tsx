@@ -36,29 +36,37 @@ type LocalTurn = {
 /**
  * Compõe a mensagem final da assistente combinando reply + next_question.
  *
- * Defesa contra IA duplicando: se assistant_reply já contiver a pergunta
- * (ou algo muito parecido), NÃO concatena — usa só o reply.
+ * IMPORTANTE — lógica dos 3 casos:
+ *
+ * 1. Ambos presentes (caso normal): concatena `reply\n\nnext_question`.
+ *    Defesa extra: se o reply JÁ termina em pergunta e tem palavras que
+ *    se sobrepõem à next_question, detecta duplicação e usa só o reply.
+ *
+ * 2. Só reply presente (ex: casal devolveu pergunta e a IA respondeu
+ *    brevemente sem puxar próximo campo): usa só o reply.
+ *
+ * 3. Só next_question presente: usa só a pergunta.
+ *
+ * needs_clarification NÃO afeta a composição — mesmo em clarificação, o
+ * casal PRECISA ver a nova pergunta. A flag só sinaliza ao backend que não
+ * se deve gravar campos desse turno.
  */
 function composeAssistantMessage(
   reply: string | undefined,
   nextQuestion: string | undefined,
-  needsClarification: boolean,
 ): string {
   const r = (reply ?? "").trim();
   const q = (nextQuestion ?? "").trim();
 
-  // Sem pergunta seguinte, ou em modo clarificação → só o reply
-  if (!q || needsClarification) return r || q;
+  // Casos extremos: falta um ou outro.
+  if (!q) return r;
   if (!r) return q;
 
-  // Detecta se o reply já termina com uma pergunta (provavelmente é a próxima)
-  // ou se as últimas palavras do reply aparecem na pergunta
+  // Detecta duplicação: se o reply já termina em pergunta E as
+  // palavras-chave coincidem com a next_question, descarta a duplicação.
   const replyEndsInQuestion = /\?\s*$/.test(r);
-
-  // Pega a parte do reply que pode estar duplicada (último ?)
   const replyLastQuestion = r.match(/[^.!?]*\?\s*$/)?.[0]?.trim() ?? "";
 
-  // Normaliza pra comparar (lowercase, remove pontuação, espaços extras)
   const norm = (s: string) =>
     s
       .toLowerCase()
@@ -69,16 +77,16 @@ function composeAssistantMessage(
   const normReplyQ = norm(replyLastQuestion);
   const normNext = norm(q);
 
-  // Se o reply já termina em pergunta E as palavras-chave coincidem ≥ 60%,
-  // considera duplicado e descarta a próxima pergunta
   if (replyEndsInQuestion && normReplyQ.length > 0) {
-    const replyWords = new Set(normReplyQ.split(" ").filter((w) => w.length > 3));
+    const replyWords = new Set(
+      normReplyQ.split(" ").filter((w) => w.length > 3),
+    );
     const nextWords = normNext.split(" ").filter((w) => w.length > 3);
     if (nextWords.length === 0) return r;
     const overlap =
       nextWords.filter((w) => replyWords.has(w)).length / nextWords.length;
     if (overlap >= 0.5) {
-      // Duplicação detectada — usa só o reply (que já tem a pergunta)
+      // Duplicação detectada — usa só o reply (que já contém a pergunta).
       return r;
     }
   }
@@ -239,7 +247,6 @@ export default function ComecePage() {
         const assistantContent = composeAssistantMessage(
           data.assistant_reply,
           data.next_question,
-          data.needs_clarification,
         );
 
         if (assistantContent && assistantContent.trim()) {
@@ -283,10 +290,29 @@ export default function ComecePage() {
     ],
   );
 
-  // Botão "Topamos" — envia primeira mensagem hidden e dispara primeira call
+  /**
+   * Botão "Topamos" — NÃO envia "Topamos" como mensagem do casal à IA.
+   * Apenas transiciona para o estado "iniciado" e injeta a primeira pergunta
+   * hardcoded diretamente no chat. Isso evita que o modelo interprete o
+   * label do botão como resposta ("Amei esse topamos...").
+   *
+   * A primeira pergunta é sempre a mesma (nomes), então não vale queimar
+   * uma chamada de API só pra receber um texto que já sabemos.
+   */
   function handleStart() {
     setHasStarted(true);
-    sendMessage("Topamos");
+    const firstQuestion: LocalTurn = {
+      id: `a-intro-${Date.now()}`,
+      role: "assistant",
+      content:
+        "Que bom. Pra começar, me contem os primeiros nomes de vocês dois.",
+    };
+    setTurns((prev) => [...prev, firstQuestion]);
+    appendChatTurn({
+      role: "assistant",
+      content: firstQuestion.content,
+      timestamp: new Date().toISOString(),
+    });
   }
 
   function handleSubmit(e: React.FormEvent) {
