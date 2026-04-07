@@ -20,6 +20,12 @@ type CoupleState = {
   state: string | null;
   estimated_budget: number | null;
   email: string | null;
+  guest_count: number | null;
+
+  // Campos ricos opcionais (alimentam o site do casamento)
+  dance_song: string | null;
+  how_they_met: string | null;
+  extra_notes: string | null;
 
   // Histórico da conversa de onboarding (para retomar sessão)
   onboarding_history: ChatTurn[];
@@ -48,6 +54,11 @@ type CoupleState = {
   // Ações
   // ============================================================
   applyOnboardingUpdates: (updates: Partial<CollectedData>) => void;
+  updateRichData: (updates: {
+    dance_song?: string | null;
+    how_they_met?: string | null;
+    extra_notes?: string | null;
+  }) => void;
   appendChatTurn: (turn: ChatTurn) => void;
   markOnboardingComplete: () => void;
   setProfile: (
@@ -73,6 +84,10 @@ const initialState = {
   state: null,
   estimated_budget: null,
   email: null,
+  guest_count: null,
+  dance_song: null,
+  how_they_met: null,
+  extra_notes: null,
   onboarding_history: [],
   onboarding_complete: false,
   dream_text: null,
@@ -101,6 +116,23 @@ export const useCouple = create<CoupleState>()(
           created_at: state.created_at ?? new Date().toISOString(),
           journey_started_at:
             state.journey_started_at ?? new Date().toISOString(),
+        })),
+
+      updateRichData: (updates) =>
+        set((state) => ({
+          ...state,
+          dance_song:
+            updates.dance_song !== undefined
+              ? updates.dance_song
+              : state.dance_song,
+          how_they_met:
+            updates.how_they_met !== undefined
+              ? updates.how_they_met
+              : state.how_they_met,
+          extra_notes:
+            updates.extra_notes !== undefined
+              ? updates.extra_notes
+              : state.extra_notes,
         })),
 
       appendChatTurn: (turn) =>

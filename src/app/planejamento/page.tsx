@@ -7,6 +7,7 @@ import { CategoryCard } from "@/components/planejamento/category-card";
 import { ProgressFooter } from "@/components/planejamento/progress-footer";
 import { TriggerInlineCard } from "@/components/triggers/trigger-inline-card";
 import { TriggerRenderer, useInlineTriggers } from "@/components/triggers/trigger-renderer";
+import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { Overline } from "@/components/ornaments/overline";
 import { useCouple } from "@/store/couple";
 import { profiles } from "@/data/profiles";
@@ -33,6 +34,7 @@ export default function PlanejamentoPage() {
   const wedding_date = useCouple((s) => s.wedding_date);
   const estimated_budget = useCouple((s) => s.estimated_budget);
   const selections = useCouple((s) => s.selections);
+  const skipped_categories = useCouple((s) => s.skipped_categories);
 
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
@@ -143,13 +145,22 @@ export default function PlanejamentoPage() {
                 selection={selections.find(
                   (s) => s.category_slug === category.slug,
                 )}
+                isSkipped={skipped_categories.includes(category.slug)}
               />
             ))}
           </div>
+
+          {/* Helper text sobre pular */}
+          <p className="text-center mt-10 md:mt-12 text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Não precisam fechar tudo pela plataforma — vocês podem{" "}
+            <strong className="text-foreground font-medium">pular categorias</strong>{" "}
+            que já tem, ou que preferem resolver depois. O casamento segue firme.
+          </p>
         </section>
       </main>
 
       <ProgressFooter />
+      <SpecialistWidget />
     </>
   );
 }

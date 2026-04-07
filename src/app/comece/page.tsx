@@ -42,6 +42,7 @@ export default function ComecePage() {
   const city = useCouple((s) => s.city);
   const state = useCouple((s) => s.state);
   const estimated_budget = useCouple((s) => s.estimated_budget);
+  const guest_count = useCouple((s) => s.guest_count);
   const email = useCouple((s) => s.email);
   const onboarding_history = useCouple((s) => s.onboarding_history);
   const applyOnboardingUpdates = useCouple((s) => s.applyOnboardingUpdates);
@@ -93,6 +94,7 @@ export default function ComecePage() {
     city: city ?? undefined,
     state: state ?? undefined,
     estimated_budget: estimated_budget ?? undefined,
+    guest_count: guest_count ?? undefined,
     email: email ?? undefined,
   };
   const collectedCount = [
@@ -100,9 +102,10 @@ export default function ComecePage() {
     wedding_date,
     city,
     estimated_budget,
+    guest_count,
     email,
   ].filter(Boolean).length;
-  const progress = (collectedCount / 5) * 100;
+  const progress = (collectedCount / 6) * 100;
 
   const sendMessage = useCallback(
     async (message: string) => {
@@ -243,7 +246,7 @@ export default function ComecePage() {
                 role="progressbar"
                 aria-valuenow={collectedCount}
                 aria-valuemin={0}
-                aria-valuemax={5}
+                aria-valuemax={6}
                 aria-label="Progresso do onboarding"
               />
             </div>

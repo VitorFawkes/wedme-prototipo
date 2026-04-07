@@ -18,6 +18,35 @@ import {
 import { formatBRL, formatDateExtended } from "@/lib/format";
 
 /**
+ * Hash determinístico de string para gerar números "aleatórios" estáveis.
+ * Usado em peer_count_live e match_percent — precisam ser consistentes
+ * entre render servidor/cliente.
+ */
+function deterministicHash(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function deterministicPeerCount(seed: string): number {
+  // Retorna 2-9 casais olhando agora
+  return (deterministicHash(seed) % 8) + 2;
+}
+
+function deterministicMatchPercent(seed: string): number {
+  // Retorna 84-98% de match — sempre alto porque o sort já priorizou
+  return 84 + (deterministicHash(seed) % 15);
+}
+
+function deterministicSocialProofCount(seed: string): number {
+  // 12-48 casais no último trimestre
+  return 12 + (deterministicHash(seed) % 37);
+}
+
+/**
  * Rule engine de gatilhos mentais (briefing §6).
  *
  * Recebe o estado relevante do casal + o pathname atual e retorna a lista
@@ -36,6 +65,7 @@ export type TriggerEvalContext = {
   state: string | null;
   wedding_date: string | null;
   estimated_budget: number | null;
+  guest_count: number | null;
   wedding_profile_slug: ProfileSlug | null;
   selections: Selection[];
   skipped_categories: CategorySlug[];
@@ -95,6 +125,8 @@ function checkCondition(
       return !ctx.selections.some((s) => s.category_slug === cond.slug);
     case "wedding_date_set":
       return ctx.wedding_date != null && ctx.wedding_date.length > 0;
+    case "guest_count_set":
+      return ctx.guest_count != null && ctx.guest_count > 0;
     case "on_route":
       return ctx.pathname.startsWith(cond.pattern);
     default:
@@ -145,6 +177,13 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
     ? Math.max(0, ctx.estimated_budget - totalConfirmed)
     : 0;
 
+  // Contexto do pathname pra seeds determinísticos (oferta específica)
+  const offerMatch = ctx.pathname.match(/^\/oferta\/([^/]+)/);
+  const offerSlug = offerMatch?.[1] ?? "";
+  const peerSeed = `${offerSlug}-${new Date().toDateString()}`; // muda por dia
+  const matchSeed = `${ctx.wedding_profile_slug}-${offerSlug}`;
+  const socialSeed = `${ctx.wedding_profile_slug}-${ctx.city}-${currentCategory ?? ""}`;
+
   const replacements: Record<string, string> = {
     "{nome_1}": ctx.partner_1_name ?? "",
     "{nome_2}": ctx.partner_2_name ?? "",
@@ -160,6 +199,14 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
     "{proxima_categoria_pendente}":
       nextPendingCategory?.name.toLowerCase() ?? "uma das categorias",
     "{data_extensa}": formatDateExtended(ctx.wedding_date),
+    "{guest_count}": ctx.guest_count?.toString() ?? "",
+    "{peer_count_live}": offerSlug
+      ? deterministicPeerCount(peerSeed).toString()
+      : "3",
+    "{match_percent}": offerSlug
+      ? deterministicMatchPercent(matchSeed).toString()
+      : "90",
+    "{social_proof_count}": deterministicSocialProofCount(socialSeed).toString(),
   };
 
   let result = template;

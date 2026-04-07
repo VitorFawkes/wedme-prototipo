@@ -5,6 +5,7 @@ import {
   Clock,
   ShieldCheck,
   Target,
+  Eye,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,6 +20,7 @@ const ICONS: Record<string, LucideIcon> = {
   Clock,
   ShieldCheck,
   Target,
+  Eye,
 };
 
 export function TriggerIcon({

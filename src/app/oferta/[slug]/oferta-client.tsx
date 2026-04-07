@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, Star, Check, X as XIcon } from "lucide-react";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import { TriggerRenderer } from "@/components/triggers/trigger-renderer";
+import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { Lightbox } from "@/components/oferta/lightbox";
 import { Badge } from "@/components/ui/badge";
 import { Overline } from "@/components/ornaments/overline";
@@ -408,6 +409,8 @@ export function OfertaClient({ slug }: { slug: string }) {
         onClose={() => setLightboxOpen(false)}
         alt={vendor.name}
       />
+
+      <SpecialistWidget />
     </>
   );
 }

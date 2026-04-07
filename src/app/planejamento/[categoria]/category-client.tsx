@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import { VendorCard } from "@/components/planejamento/vendor-card";
@@ -12,6 +13,7 @@ import {
   TriggerRenderer,
   useInlineTriggers,
 } from "@/components/triggers/trigger-renderer";
+import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { useCouple } from "@/store/couple";
 import {
   getProvidersByCategory,
@@ -101,11 +103,67 @@ export function CategoryClient({
               <VendorCard key={vendor.slug} vendor={vendor} />
             ))}
           </div>
+
+          {/* Pular esta categoria */}
+          <SkipCategoryButton categorySlug={categorySlug} />
         </div>
       </main>
 
       <ProgressFooter />
+      <SpecialistWidget />
     </>
+  );
+}
+
+function SkipCategoryButton({ categorySlug }: { categorySlug: CategorySlug }) {
+  const router = useRouter();
+  const skipCategory = useCouple((s) => s.skipCategory);
+  const [confirming, setConfirming] = useState(false);
+
+  function handleSkip() {
+    skipCategory(categorySlug);
+    router.push("/planejamento");
+  }
+
+  if (confirming) {
+    return (
+      <div className="mt-12 md:mt-16 max-w-md mx-auto bg-muted border border-border rounded-md p-5 md:p-6 text-center">
+        <p className="font-display text-base md:text-lg text-foreground leading-snug mb-1">
+          Tem certeza?
+        </p>
+        <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+          Vocês podem voltar e escolher depois, a qualquer momento.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2 justify-center">
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="inline-flex items-center justify-center min-h-11 px-5 rounded-sm border border-border bg-background text-sm font-medium text-foreground hover:border-primary transition-colors"
+          >
+            Sim, pular por enquanto
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirming(false)}
+            className="inline-flex items-center justify-center min-h-11 px-5 rounded-sm text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center mt-12 md:mt-16">
+      <button
+        type="button"
+        onClick={() => setConfirming(true)}
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+      >
+        Pular esta categoria
+      </button>
+    </div>
   );
 }
 

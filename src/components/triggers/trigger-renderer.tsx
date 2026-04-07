@@ -95,6 +95,7 @@ export function useTriggers(filter?: {
   const state = useCouple((s) => s.state);
   const wedding_date = useCouple((s) => s.wedding_date);
   const estimated_budget = useCouple((s) => s.estimated_budget);
+  const guest_count = useCouple((s) => s.guest_count);
   const wedding_profile_slug = useCouple((s) => s.wedding_profile_slug);
   const selections = useCouple((s) => s.selections);
   const skipped_categories = useCouple((s) => s.skipped_categories);
@@ -110,6 +111,7 @@ export function useTriggers(filter?: {
       state,
       wedding_date,
       estimated_budget,
+      guest_count,
       wedding_profile_slug,
       selections,
       skipped_categories,
@@ -129,6 +131,7 @@ export function useTriggers(filter?: {
     state,
     wedding_date,
     estimated_budget,
+    guest_count,
     wedding_profile_slug,
     selections,
     skipped_categories,

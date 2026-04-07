@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Check } from "lucide-react";
+import { useState } from "react";
+import { Check, MinusCircle, X as XIcon } from "lucide-react";
 import {
   MapPin,
   Camera,
@@ -15,10 +16,11 @@ import {
   Film,
   type LucideIcon,
 } from "lucide-react";
-import type { Category, Selection } from "@/types";
+import type { Category, CategorySlug, Selection } from "@/types";
 import { cn } from "@/lib/utils";
 import { getVendorOrVenueBySlug } from "@/lib/couple-helpers";
 import { formatBRL } from "@/lib/format";
+import { useCouple } from "@/store/couple";
 
 const ICONS: Record<string, LucideIcon> = {
   MapPin,
@@ -43,14 +45,86 @@ export function CategoryCard({
   category,
   order,
   selection,
+  isSkipped = false,
 }: {
   category: Category;
   order: number;
   selection?: Selection;
+  isSkipped?: boolean;
 }) {
   const Icon = ICONS[category.icon_name] ?? MapPin;
   const isSelected = !!selection;
   const vendor = selection ? getVendorOrVenueBySlug(selection.vendor_slug) : null;
+  const skipCategory = useCouple((s) => s.skipCategory);
+  const removeSelection = useCouple((s) => s.removeSelection);
+  const [confirmingSkip, setConfirmingSkip] = useState(false);
+
+  function handleSkip(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setConfirmingSkip(true);
+  }
+
+  function confirmSkip(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    skipCategory(category.slug as CategorySlug);
+    setConfirmingSkip(false);
+  }
+
+  function cancelSkip(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setConfirmingSkip(false);
+  }
+
+  function handleUnskip(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Remove da lista de puladas
+    removeSelection(category.slug as CategorySlug); // não remove nada, mas ok
+    // Forçar unskip: chama o store manualmente
+    useCouple.setState((state) => ({
+      skipped_categories: state.skipped_categories.filter(
+        (c) => c !== category.slug,
+      ),
+    }));
+  }
+
+  // ============================================================
+  // Estado: PULADA
+  // ============================================================
+  if (isSkipped) {
+    return (
+      <div
+        className={cn(
+          "relative block rounded-md border border-border border-dashed bg-background/40 min-h-[200px] md:min-h-[220px] flex flex-col p-5 md:p-6",
+        )}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <span className="font-display text-3xl md:text-4xl font-medium text-muted-foreground/50 tracking-editorial leading-none line-through">
+            {String(order).padStart(2, "0")}
+          </span>
+          <Icon className="size-6 text-muted-foreground/40" aria-hidden="true" />
+        </div>
+        <div className="mt-auto">
+          <h3 className="font-display text-xl md:text-2xl font-medium text-muted-foreground/70 tracking-editorial leading-tight line-through mb-1">
+            {category.name}
+          </h3>
+          <p className="text-xs text-muted-foreground italic mb-3">
+            Pulada — você pode voltar quando quiser
+          </p>
+          <button
+            type="button"
+            onClick={handleUnskip}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary tracking-wide hover:underline"
+          >
+            Reativar esta categoria
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Link
@@ -103,10 +177,40 @@ export function CategoryCard({
               </p>
             </div>
           </div>
+        ) : confirmingSkip ? (
+          <div className="flex items-center gap-2 pt-2">
+            <button
+              type="button"
+              onClick={confirmSkip}
+              className="flex-1 inline-flex items-center justify-center min-h-10 px-3 text-xs font-medium text-muted-foreground bg-muted border border-border rounded-sm hover:bg-border/50 transition-colors"
+            >
+              Sim, pular
+            </button>
+            <button
+              type="button"
+              onClick={cancelSkip}
+              className="inline-flex items-center justify-center min-h-10 min-w-10 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Cancelar"
+            >
+              <XIcon className="size-4" />
+            </button>
+          </div>
         ) : (
-          <span className="inline-flex items-center text-sm font-medium text-primary tracking-wide">
-            Ver opções →
-          </span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center text-sm font-medium text-primary tracking-wide">
+              Ver opções →
+            </span>
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors min-h-8 px-2 -mr-2"
+              aria-label={`Pular ${category.name}`}
+              title="Pular esta categoria"
+            >
+              <MinusCircle className="size-3.5" />
+              Pular
+            </button>
+          </div>
         )}
       </div>
     </Link>

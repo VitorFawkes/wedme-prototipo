@@ -11,6 +11,8 @@ import {
   TriggerRenderer,
   useInlineTriggers,
 } from "@/components/triggers/trigger-renderer";
+import { SpecialistWidget } from "@/components/specialist/specialist-widget";
+import { PersonalizeSite } from "@/components/meu-casamento/personalize-site";
 import { Overline } from "@/components/ornaments/overline";
 import { Ornament } from "@/components/ornaments/ornament";
 import { useCouple } from "@/store/couple";
@@ -274,6 +276,9 @@ export default function MeuCasamentoPage() {
             )}
           </section>
 
+          {/* Personalize site */}
+          <PersonalizeSite />
+
           {/* Preview do site (>= 50%) */}
           {progress >= 50 && (
             <section className="bg-muted rounded-md p-6 md:p-8 text-center">
@@ -296,6 +301,7 @@ export default function MeuCasamentoPage() {
           )}
         </div>
       </main>
+      <SpecialistWidget />
     </>
   );
 }

@@ -9,6 +9,7 @@ import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import { Overline } from "@/components/ornaments/overline";
 import { Ornament } from "@/components/ornaments/ornament";
 import { CelebrationScreen } from "@/components/checkout/celebration";
+import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { useCouple } from "@/store/couple";
 import {
   getCoupleSlug,
@@ -306,6 +307,7 @@ export default function CheckoutPage() {
           </section>
         </div>
       </main>
+      <SpecialistWidget />
     </>
   );
 }

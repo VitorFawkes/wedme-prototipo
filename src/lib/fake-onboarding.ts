@@ -109,6 +109,26 @@ function tryParseEmail(text: string): string | undefined {
   return match?.[0];
 }
 
+function tryParseGuestCount(text: string): number | undefined {
+  const lower = text.toLowerCase();
+  // "mini wedding" → 40
+  if (/mini\s*wedding/.test(lower)) return 40;
+  if (/\b(\u00edntimo|intimo|intimista)\b/.test(lower)) return 70;
+  if (/\b(grande|gigante)\b/.test(lower) && /festa|casamento/.test(lower))
+    return 200;
+  // "uns 80", "80 convidados", "entre 100 e 150"
+  const range = lower.match(/entre\s+(\d{2,4})\s*(?:e|a)\s*(\d{2,4})/);
+  if (range) {
+    return Math.round((parseInt(range[1], 10) + parseInt(range[2], 10)) / 2);
+  }
+  const direct = lower.match(/(?:uns|aproximadamente|cerca de|uns?)?\s*(\d{2,4})\s*(?:convidados|pessoas|pax)/);
+  if (direct) return parseInt(direct[1], 10);
+  // "uns 80" sozinho
+  const loose = lower.match(/\buns?\s+(\d{2,4})\b/);
+  if (loose) return parseInt(loose[1], 10);
+  return undefined;
+}
+
 function tryParseCity(text: string): { city?: string; state?: string } {
   const lower = text.toLowerCase();
   for (const [city, state] of Object.entries(KNOWN_CITIES)) {
@@ -144,6 +164,9 @@ const REPLIES = {
   city_extracted: (city: string) => `${city} — vou guardar isso aqui.`,
   ask_budget: "E o orçamento? Pode ser uma estimativa, qualquer noção serve.",
   budget_extracted: "Anotado. Dá pra trabalhar muito bem com esse valor.",
+  ask_guests:
+    "E quantos convidados? Pode ser redondo — uns 80, entre 100 e 150, ou 'mini wedding'.",
+  guests_extracted: "Anotado. Isso já me ajuda a montar o caminho certo.",
   ask_email: "Por último: qual o email de vocês pra eu salvar tudo?",
   email_extracted: "Pronto. Tudo salvo.",
   transition:
@@ -189,6 +212,12 @@ export function fakeOnboardingStep(
       updates.estimated_budget = budget;
       reply = REPLIES.budget_extracted;
     }
+  } else if (!collected.guest_count) {
+    const guests = tryParseGuestCount(userMessage);
+    if (guests) {
+      updates.guest_count = guests;
+      reply = REPLIES.guests_extracted;
+    }
   } else if (!collected.email) {
     const email = tryParseEmail(userMessage);
     if (email) {
@@ -216,6 +245,9 @@ export function fakeOnboardingStep(
   } else if (!merged.estimated_budget) {
     next_field_to_ask = "estimated_budget";
     next_question = REPLIES.ask_budget;
+  } else if (!merged.guest_count) {
+    next_field_to_ask = "guest_count";
+    next_question = REPLIES.ask_guests;
   } else if (!merged.email) {
     next_field_to_ask = "email";
     next_question = REPLIES.ask_email;

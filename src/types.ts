@@ -131,6 +131,7 @@ export type TriggerCondition =
   | { type: "category_selected"; slug: CategorySlug }
   | { type: "category_not_selected"; slug: CategorySlug }
   | { type: "wedding_date_set" }
+  | { type: "guest_count_set" }
   | { type: "on_route"; pattern: string };
 
 export type TriggerPosition =
@@ -170,6 +171,17 @@ export type CollectedData = {
   state?: string;
   estimated_budget?: number;
   email?: string;
+  guest_count?: number;
+};
+
+/**
+ * Campos "ricos" opcionais — coletados ao longo da jornada (não no onboarding básico).
+ * Alimentam o site do casamento e gatilhos mais espec\u00edficos.
+ */
+export type CoupleRichData = {
+  dance_song?: string; // "A primeira m\u00fasica — vai ser de voc\u00eas?"
+  how_they_met?: string; // hist\u00f3ria do casal (opcional)
+  extra_notes?: string; // pedidos especiais ao time we.wedme
 };
 
 export type OnboardingStepRequest = {
@@ -186,6 +198,7 @@ export type OnboardingStepResponse = {
     | "wedding_date"
     | "city"
     | "estimated_budget"
+    | "guest_count"
     | "email"
     | null;
   next_question: string;

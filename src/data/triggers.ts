@@ -1,18 +1,25 @@
 import type { TriggerRule } from "@/types";
 
 /**
- * As 7 regras de gatilhos mentais (briefing §6.2).
+ * Rule engine de gatilhos mentais v2 — baseado em benchmark de
+ * conversão de alto valor (Aman, Net-a-Porter, Zola, Joy) + Cialdini.
  *
- * O copy de cada gatilho é FINAL — não modificar. As variáveis entre {chaves}
- * são interpoladas em runtime pela função de renderização (ver
- * src/lib/evaluate-triggers.ts e os componentes de trigger).
+ * Princípios:
+ * - Reciprocidade (presente, consulta gratuita)
+ * - Prova social HIPER-específica (perfil + cidade + timestamp)
+ * - Escassez CONCRETA (nunca manipulativa)
+ * - Peer influence (outros casais parecidos)
+ * - Loss aversion (já travaram X — 48h pra finalizar)
+ * - Authority (curadoria verificada)
+ * - Tangibility (preview do site, mood board)
  *
- * Ordem por priority (maior = aparece primeiro). Cada gatilho tem condições
- * que precisam todas bater (AND). once: true grava em fired_once_triggers.
+ * Os placeholders são interpolados em runtime por `evaluate-triggers.ts`.
  */
 
 export const triggers: readonly TriggerRule[] = [
-  // 1. Boas-vindas ao caminho — reciprocidade + personalização
+  // ============================================================
+  // 1. BOAS-VINDAS AO CAMINHO — reciprocidade + personalização
+  // ============================================================
   {
     slug: "boas-vindas-caminho",
     name: "Boas-vindas ao caminho personalizado",
@@ -26,13 +33,14 @@ export const triggers: readonly TriggerRule[] = [
     ],
     content: {
       icon: "Sparkles",
-      title:
-        "Bem-vindos, {nome_1} e {nome_2}",
-      body: "Montamos este caminho olhando para o sonho de vocês — começando por {primeira_categoria}, que é onde tudo costuma fazer mais diferença para casamentos {profile_name}.",
+      title: "Bem-vindos, {nome_1} e {nome_2}",
+      body: "Montamos este caminho olhando para o sonho de vocês — começando por {primeira_categoria}, que é onde tudo costuma fazer mais diferença para casamentos {profile_name}. Podem começar pela ordem ou pela categoria que mais animar.",
     },
   },
 
-  // 2. Primeira escolha confirmada — efeito de progresso
+  // ============================================================
+  // 2. PRIMEIRA ESCOLHA CONFIRMADA — efeito de progresso
+  // ============================================================
   {
     slug: "primeira-escolha",
     name: "Primeira escolha confirmada",
@@ -43,12 +51,89 @@ export const triggers: readonly TriggerRule[] = [
     conditions: [{ type: "categories_selected_gte", value: 1 }],
     content: {
       icon: "Sparkles",
-      title: "Primeira escolha feita",
-      body: "Daqui pra frente, a cada categoria confirmada, o casamento de vocês vai tomando forma — e a gente já começa a mover as peças por trás.",
+      title: "Primeira escolha feita 🤍",
+      body: "A partir de agora, cada categoria confirmada trava o preço e aciona nosso time por trás. Vocês escolhem — a gente resolve.",
     },
   },
 
-  // 3. Brinde por 3 confirmações — reciprocidade + tangibilidade
+  // ============================================================
+  // 3. PROVA SOCIAL NA CATEGORIA — peer influence
+  // ============================================================
+  {
+    slug: "prova-social-categoria",
+    name: "Prova social específica ao perfil na categoria",
+    priority: 78,
+    once: false,
+    position: "inline_card",
+    style: "subtle",
+    conditions: [{ type: "on_route", pattern: "/planejamento/" }],
+    content: {
+      icon: "Users",
+      title: "Casais com perfil parecido",
+      body: "Nos últimos 3 meses, {social_proof_count} casais {profile_name} em {cidade} escolheram {vendor_destaque} nesta categoria. Vocês podem explorar tudo — achamos justo vocês saberem por onde os outros começam.",
+    },
+  },
+
+  // ============================================================
+  // 4. ESCASSEZ CONCRETA DA DATA — urgência sem manipulação
+  // ============================================================
+  {
+    slug: "escassez-data",
+    name: "Escassez concreta da data do casal",
+    priority: 85,
+    once: false,
+    position: "floating_badge",
+    style: "subtle",
+    conditions: [
+      { type: "wedding_date_set" },
+      { type: "on_route", pattern: "/oferta/" },
+    ],
+    content: {
+      icon: "Clock",
+      title: "{data_extensa}",
+      body: "Este profissional tem esta data livre — mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
+    },
+  },
+
+  // ============================================================
+  // 5. PEER LIVE — quem mais está olhando AGORA (novo)
+  // ============================================================
+  {
+    slug: "peer-live-oferta",
+    name: "Outros casais olhando este profissional agora",
+    priority: 70,
+    once: false,
+    position: "floating_badge",
+    style: "subtle",
+    conditions: [{ type: "on_route", pattern: "/oferta/" }],
+    content: {
+      icon: "Eye",
+      title: "{peer_count_live} casais olhando agora",
+      body: "Este perfil está com movimento nas últimas horas. Se fizer sentido pra vocês, vale reservar antes da próxima proposta.",
+    },
+  },
+
+  // ============================================================
+  // 6. MATCH DE PERFIL — autoridade + match percentual (novo)
+  // ============================================================
+  {
+    slug: "match-perfil",
+    name: "Compatibilidade percentual com o perfil",
+    priority: 65,
+    once: false,
+    position: "inline_card",
+    style: "subtle",
+    conditions: [{ type: "on_route", pattern: "/oferta/" }],
+    content: {
+      icon: "Target",
+      title: "{match_percent}% de match com o perfil de vocês",
+      body: "Nossa curadoria cruza {profile_name} + {cidade} + estilo do portfólio deste profissional. Não é horóscopo — é análise real de compatibilidade.",
+    },
+  },
+
+  // ============================================================
+  // 7. BRINDE POR 3 CONFIRMAÇÕES — reciprocidade tangível
+  // ============================================================
   {
     slug: "presente-tres-confirmacoes",
     name: "Presente após 3 confirmações",
@@ -60,51 +145,18 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Gift",
       title: "Um presente nosso pra vocês",
-      body: "Vocês acabam de confirmar 3 categorias. Como reconhecimento, estamos oferecendo um ensaio pré-wedding completo com um dos nossos fotógrafos parceiros — por nossa conta. É nosso jeito de dizer obrigado.",
+      body: "Vocês confirmaram 3 categorias. Como reconhecimento, estamos oferecendo um ensaio pré-wedding completo com um dos nossos fotógrafos parceiros — por nossa conta. É nosso jeito de dizer obrigado.",
       cta_text: "Aceitar presente",
     },
   },
 
-  // 4. Prova social específica ao perfil — pertencimento
-  {
-    slug: "prova-social-categoria",
-    name: "Prova social específica ao perfil na categoria",
-    priority: 70,
-    once: false,
-    position: "inline_card",
-    style: "subtle",
-    conditions: [{ type: "on_route", pattern: "/planejamento/" }],
-    content: {
-      icon: "Users",
-      title: "Casais com perfil parecido",
-      body: "Outros casais com perfil {profile_name} que casaram em {cidade} no último trimestre escolheram, em média, {vendor_destaque} para esta categoria. Vocês podem explorar por conta — mas achamos justo vocês saberem.",
-    },
-  },
-
-  // 5. Escassez concreta de data — urgência sem manipulação
-  {
-    slug: "escassez-data",
-    name: "Escassez concreta da data do casal",
-    priority: 80,
-    once: false,
-    position: "floating_badge",
-    style: "subtle",
-    conditions: [
-      { type: "wedding_date_set" },
-      { type: "on_route", pattern: "/oferta/" },
-    ],
-    content: {
-      icon: "Clock",
-      title: "{data_extensa}",
-      body: "Este profissional tem esta data livre — mas tem outra proposta aberta para o mesmo fim de semana. Normalmente definem em 72 horas.",
-    },
-  },
-
-  // 6. Loss aversion no checkout abandonado
+  // ============================================================
+  // 8. LOSS AVERSION — reserva de 48h (o gatilho mais importante)
+  // ============================================================
   {
     slug: "loss-aversion-checkout",
-    name: "Loss aversion checkout abandonado",
-    priority: 85,
+    name: "Loss aversion — valor travado + prazo",
+    priority: 88,
     once: false,
     position: "top_bar",
     style: "normal",
@@ -115,18 +167,20 @@ export const triggers: readonly TriggerRule[] = [
     ],
     content: {
       icon: "ShieldCheck",
-      title: "Vocês já travaram R$ {total_confirmado}",
-      body: "A reserva fica garantida por 48 horas — depois disso, os preços podem mudar. Podemos finalizar?",
+      title: "Vocês travaram R$ {total_confirmado}",
+      body: "A reserva fica garantida por 48 horas. Depois disso, os preços podem mudar. Podemos finalizar?",
       cta_text: "Ir ao checkout",
       cta_href: "/checkout",
     },
   },
 
-  // 7. Quase lá — meta próxima
+  // ============================================================
+  // 9. QUASE LÁ — proximidade do orçamento total
+  // ============================================================
   {
     slug: "quase-la",
-    name: "Quase lá — faltam R$X para completar o orçamento",
-    priority: 75,
+    name: "Quase lá — faltam R$X pra completar o orçamento",
+    priority: 72,
     once: false,
     position: "inline_card",
     style: "normal",
@@ -137,7 +191,28 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Target",
       title: "Vocês estão a R$ {diferenca} de completar o orçamento",
-      body: "A única categoria importante ainda aberta é {proxima_categoria_pendente} — e é aí que o casamento de vocês ganha a cara final.",
+      body: "A única categoria ainda aberta que muda o caráter do casamento é {proxima_categoria_pendente}. É aí que a atmosfera de vocês ganha a forma final.",
+    },
+  },
+
+  // ============================================================
+  // 10. CONVIDADOS — gatilho de compatibilidade de tamanho (novo)
+  // ============================================================
+  {
+    slug: "guest-count-venue-fit",
+    name: "Compatibilidade de convidados com espaços",
+    priority: 60,
+    once: true,
+    position: "inline_card",
+    style: "subtle",
+    conditions: [
+      { type: "on_route", pattern: "/planejamento/local" },
+      { type: "guest_count_set" },
+    ],
+    content: {
+      icon: "Users",
+      title: "Filtrado para {guest_count} convidados",
+      body: "Já priorizamos espaços com capacidade adequada. Os locais abaixo acomodam confortavelmente o tamanho do casamento de vocês — sem pista vazia, sem aperto.",
     },
   },
 ] as const;

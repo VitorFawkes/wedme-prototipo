@@ -138,6 +138,23 @@
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
   }
 
+  /* cursor pointer em tudo que é clicável — shadcn base-ui nem sempre aplica */
+  button:not(:disabled),
+  a[href],
+  [role="button"]:not([aria-disabled="true"]),
+  [role="link"],
+  label[for],
+  summary,
+  input[type="checkbox"],
+  input[type="radio"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
   /* respeita preferência do usuário por menos movimento */
   @media (prefers-reduced-motion: reduce) {
     *,

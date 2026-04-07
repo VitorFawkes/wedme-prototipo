@@ -77,6 +77,7 @@ export async function POST(req: Request) {
                   city: { type: ["string", "null"] },
                   state: { type: ["string", "null"] },
                   estimated_budget: { type: ["number", "null"] },
+                  guest_count: { type: ["number", "null"] },
                   email: { type: ["string", "null"] },
                 },
                 required: [
@@ -86,6 +87,7 @@ export async function POST(req: Request) {
                   "city",
                   "state",
                   "estimated_budget",
+                  "guest_count",
                   "email",
                 ],
               },
@@ -97,6 +99,7 @@ export async function POST(req: Request) {
                   "wedding_date",
                   "city",
                   "estimated_budget",
+                  "guest_count",
                   "email",
                   null,
                 ],
