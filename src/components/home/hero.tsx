@@ -34,7 +34,7 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 md:mt-8 text-base md:text-lg text-white/85 font-sans leading-relaxed max-w-md mx-auto">
-          Faça como mais de 1.200 casais.
+          Faça como mais de 1.500 casais.
         </p>
 
         <div className="mt-8 md:mt-10">
