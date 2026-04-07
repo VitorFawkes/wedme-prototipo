@@ -140,6 +140,7 @@ export default function ComecePage() {
   const [transitionReady, setTransitionReady] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [audioOpen, setAudioOpen] = useState(false);
+  const [audioMode, setAudioMode] = useState(false);
 
   // Dream mode states
   const [dreamMode, setDreamMode] = useState(false);
@@ -396,6 +397,7 @@ export default function ComecePage() {
 
   function handleStartAudio() {
     setHasStarted(true);
+    setAudioMode(true);
     const questionsTurn: LocalTurn = {
       id: `a-questions-${Date.now()}`,
       role: "assistant",
@@ -407,8 +409,6 @@ export default function ComecePage() {
       content: questionsTurn.content,
       timestamp: new Date().toISOString(),
     });
-    // Abre o gravador de áudio automaticamente após um breve delay
-    setTimeout(() => setAudioOpen(true), 800);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -551,8 +551,8 @@ export default function ComecePage() {
         </div>
       </div>
 
-      {/* Input do chat (campos do onboarding) */}
-      {hasStarted && !dreamMode && (
+      {/* Input do chat (campos do onboarding) — modo texto */}
+      {hasStarted && !dreamMode && !audioMode && (
         <form
           onSubmit={handleSubmit}
           className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border md:relative md:border-t-0 md:bg-transparent md:safe-bottom-0"
@@ -580,7 +580,7 @@ export default function ComecePage() {
               type="button"
               onClick={() => setAudioOpen(true)}
               disabled={isLoading}
-              className="shrink-0 inline-flex items-center justify-center min-w-12 min-h-12 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+              className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
               aria-label="Gravar áudio"
             >
               <Mic className="size-5" />
@@ -588,7 +588,7 @@ export default function ComecePage() {
             <button
               type="submit"
               disabled={isLoading || !inputValue.trim()}
-              className="shrink-0 inline-flex items-center justify-center min-w-12 min-h-12 rounded-sm bg-primary text-primary-foreground hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+              className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm bg-primary text-primary-foreground hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
               aria-label="Enviar mensagem"
             >
               <svg
@@ -607,6 +607,29 @@ export default function ComecePage() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* Barra do modo áudio — botão grande de gravar + opção de trocar pra texto */}
+      {hasStarted && !dreamMode && audioMode && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border">
+          <div className="max-w-2xl mx-auto px-4 md:px-0 py-4 md:py-6 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setAudioOpen(true)}
+              className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+            >
+              <Mic className="size-5" />
+              Gravar áudio
+            </button>
+            <button
+              type="button"
+              onClick={() => setAudioMode(false)}
+              className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Prefiro digitar
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Input do sonho (textarea grande) */}
@@ -655,6 +678,7 @@ export default function ComecePage() {
           if (dreamMode) {
             setDreamText(text);
           } else {
+            setAudioMode(false);
             sendMessage(text);
           }
         }}
