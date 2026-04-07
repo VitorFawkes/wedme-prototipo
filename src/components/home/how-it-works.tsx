@@ -10,18 +10,18 @@ import { Overline } from "@/components/ornaments/overline";
 const STEPS = [
   {
     Icon: Sparkles,
-    title: "Vocês contam o sonho",
-    body: "Uma assistente entende como vocês imaginam o casamento, por texto ou por áudio. Sem formulário, sem dropdown infinito.",
+    title: "Vocês contam, a gente entende",
+    body: "Em poucos minutos, uma conversa simples revela o estilo, o orçamento e o sonho de vocês. Sem formulário, sem complicação.",
   },
   {
     Icon: Compass,
-    title: "Nós montamos o caminho",
-    body: "A partir do sonho de vocês, a plataforma sabe quais categorias importam, em qual ordem, e quais profissionais fazem sentido. Curadoria de verdade.",
+    title: "Recebam opções que fazem sentido",
+    body: "A plataforma monta um caminho com espaços e profissionais escolhidos pra vocês. Cada opção foi pensada pro perfil de vocês.",
   },
   {
     Icon: Heart,
-    title: "Vocês escolhem, a gente executa",
-    body: "Comparem, selecionem, confirmem. Tudo online. Dos contratos à comunicação com cada profissional, quem resolve somos nós.",
+    title: "Vocês decidem, a gente resolve",
+    body: "Escolham o que mais combina com vocês. Contratos, comunicação com fornecedores, logística: a Welucci cuida de tudo.",
   },
 ] as const;
 

@@ -104,9 +104,15 @@ function tryParseBudget(text: string): number | undefined {
   return undefined;
 }
 
-function tryParseEmail(text: string): string | undefined {
-  const match = text.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
-  return match?.[0];
+function tryParsePhone(text: string): string | undefined {
+  // Aceita formatos: (11) 99999-1234, 11 99999-1234, 11999991234, +55 11 99999-1234
+  const cleaned = text.replace(/[^\d+\s()-]/g, "").trim();
+  const match = cleaned.match(/\+?[\d\s()-]{8,}/);
+  if (match) {
+    const digits = match[0].replace(/\D/g, "");
+    if (digits.length >= 8 && digits.length <= 13) return match[0].trim();
+  }
+  return undefined;
 }
 
 function tryParseGuestCount(text: string): number | undefined {
@@ -182,9 +188,11 @@ function capitalize(str: string): string {
 
 const REPLIES = {
   greeting: "Que bom que vocês toparam. Vamos começar pelo básico.",
+  phone_extracted: "Anotado. Agora a gente se fala.",
+  ask_phone: "Qual o melhor WhatsApp pra gente se comunicar com vocês?",
   names_extracted: (p1: string, p2: string) =>
     `${p1} e ${p2}, que combinação linda. Anotado.`,
-  ask_names: "Como vocês se chamam?",
+  ask_names: "Como vocês se chamam? (Só o primeiro nome de cada um já basta.)",
   ask_date: "E vocês já têm uma data ou pelo menos uma ideia de mês?",
   date_extracted: "Anotado. Falta pouco.",
   ask_city: "Em qual cidade ou região vai ser o grande dia?",
@@ -194,8 +202,6 @@ const REPLIES = {
   ask_guests:
     "E quantos convidados? Pode ser redondo: uns 80, entre 100 e 150, ou 'mini wedding'.",
   guests_extracted: "Anotado. Isso já me ajuda a montar o caminho certo.",
-  ask_email: "Por último: qual o email de vocês pra eu salvar tudo?",
-  email_extracted: "Pronto. Tudo salvo.",
   transition:
     "Perfeito. Agora vem a pergunta que mais importa de todas...",
   clarification: "Pode reformular pra eu entender melhor?",
@@ -213,7 +219,13 @@ export function fakeOnboardingStep(
   let reply = "";
 
   // Tenta extrair o que ainda falta
-  if (!collected.partner_1_name || !collected.partner_2_name) {
+  if (!collected.phone) {
+    const phone = tryParsePhone(userMessage);
+    if (phone) {
+      updates.phone = phone;
+      reply = REPLIES.phone_extracted;
+    }
+  } else if (!collected.partner_1_name || !collected.partner_2_name) {
     const { p1, p2 } = tryParseNames(userMessage);
     if (p1 && p2) {
       updates.partner_1_name = p1;
@@ -245,12 +257,6 @@ export function fakeOnboardingStep(
       updates.guest_count = guests;
       reply = REPLIES.guests_extracted;
     }
-  } else if (!collected.email) {
-    const email = tryParseEmail(userMessage);
-    if (email) {
-      updates.email = email;
-      reply = REPLIES.email_extracted;
-    }
   }
 
   // Estado merged para decidir o próximo passo
@@ -260,7 +266,10 @@ export function fakeOnboardingStep(
   let next_field_to_ask: OnboardingStepResponse["next_field_to_ask"] = null;
   let next_question = "";
 
-  if (!merged.partner_1_name || !merged.partner_2_name) {
+  if (!merged.phone) {
+    next_field_to_ask = "phone";
+    next_question = REPLIES.ask_phone;
+  } else if (!merged.partner_1_name || !merged.partner_2_name) {
     next_field_to_ask = "partner_names";
     next_question = REPLIES.ask_names;
   } else if (!merged.wedding_date) {
@@ -275,9 +284,6 @@ export function fakeOnboardingStep(
   } else if (!merged.guest_count) {
     next_field_to_ask = "guest_count";
     next_question = REPLIES.ask_guests;
-  } else if (!merged.email) {
-    next_field_to_ask = "email";
-    next_question = REPLIES.ask_email;
   }
 
   // Se não conseguimos extrair nada, marca como needs_clarification

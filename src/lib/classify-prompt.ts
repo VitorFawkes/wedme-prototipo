@@ -12,22 +12,24 @@ escreveram descrevendo como imaginam o casamento deles.
 
 Perfis disponíveis:
 
-1. classico-atemporal — Vocês sonham com tradições, elegância e detalhes
-   que atravessam gerações. Cerimônia formal, decoração refinada, casamento
-   de dia ou entardecer clássico.
+1. classico-atemporal — Tradições, elegância e detalhes que atravessam
+   gerações. Celebração refinada, cerimônia marcante, cada momento
+   carregado de significado.
 
-2. intimo-emocional — Um casamento pequeno, onde cada convidado importa
-   e cada detalhe conta uma história. Foco em emoção, conexão, simplicidade
-   afetiva.
+2. intimo-emocional — Um casamento profundo, onde cada convidado é
+   essencial e cada momento respira significado. Emoção no centro,
+   celebrando a verdade do que o casal sente.
 
-3. minimalista-moderno — Design contemporâneo, paleta sóbria, clean e
-   arquitetônico. Pouco mas bem feito. Sem excessos.
+3. minimalista-moderno — Design contemporâneo, paleta consciente e cada
+   escolha feita com intenção. Arquitetura, luz e atmosfera criando algo
+   único.
 
 4. natureza-destination — Ao ar livre, cercados de verde, pé na areia,
-   campo, vista. Casamentos que respiram liberdade e conexão com o lugar.
+   campo, vista. Casamentos que celebram a paisagem e a conexão do casal
+   com o lugar.
 
-5. grande-celebracao — Um grande evento, muitos convidados, festa até
-   tarde, dança, comemoração exuberante. A alegria coletiva como protagonista.
+5. grande-celebracao — Celebração vibrante, pista cheia e alegria
+   contagiante. Todos que o casal ama juntos, comemorando até o sol nascer.
 
 Escolha O perfil que melhor descreve o casal. Detected_intents devem ser
 3 palavras-chave que você identificou no texto (ex: "praia", "intimista",

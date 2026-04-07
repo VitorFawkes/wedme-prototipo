@@ -257,24 +257,24 @@ function scoreVendor(
       score += 50;
     }
 
-    // "Praia" / "litoral" no city do casal → boost para vendors com sinais de praia
+    // "Praia" / "litoral" no city do casal → boost forte para vendors com sinais de praia
     if (
       /praia|litoral|mar|areia/.test(cityLower) &&
       /praia|litoral|mar|areia|deck|pernambuco|guarujá|guaruja|ilhabela|ubatuba|ocean/.test(
         vendorCityLower + " " + highlightsLower + " " + taglineLower,
       )
     ) {
-      score += 50;
+      score += 200;
     }
 
-    // "Campo" / "interior" / "sítio" → boost para vendors interior
+    // "Campo" / "interior" / "sítio" → boost forte para vendors interior
     if (
       /campo|interior|sítio|sitio|fazenda/.test(cityLower) &&
       /campo|interior|colonial|fazenda|sítio|sitio|jardim|verde|área verde/.test(
         vendorCityLower + " " + highlightsLower + " " + taglineLower,
       )
     ) {
-      score += 50;
+      score += 200;
     }
   }
 

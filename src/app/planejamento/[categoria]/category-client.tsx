@@ -70,9 +70,13 @@ export function CategoryClient({
             </h1>
             <p className="mt-3 md:mt-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
               {sorted.length}{" "}
-              {sorted.length === 1
-                ? "profissional curado"
-                : "profissionais curados"}{" "}
+              {categorySlug === "local"
+                ? sorted.length === 1
+                  ? "espaço curado"
+                  : "espaços curados"
+                : sorted.length === 1
+                  ? "profissional curado"
+                  : "profissionais curados"}{" "}
               para o perfil de vocês{city && ` em ${city}`}.
             </p>
           </div>

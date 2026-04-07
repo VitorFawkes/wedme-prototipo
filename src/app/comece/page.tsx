@@ -3,14 +3,23 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Mic } from "lucide-react";
 import { ChatBubble } from "@/components/onboarding/chat-bubble";
 import { TypingIndicator } from "@/components/onboarding/typing-indicator";
+import { AudioRecorder } from "@/components/onboarding/audio-recorder";
+import { DreamLoading } from "@/components/onboarding/dream-loading";
+import { Ornament } from "@/components/ornaments/ornament";
+import { Overline } from "@/components/ornaments/overline";
+import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/layout/logo";
 import { useCouple } from "@/store/couple";
+import { profiles } from "@/data/profiles";
 import type {
   ChatTurn,
+  ClassifyDreamResponse,
   CollectedData,
   OnboardingStepResponse,
+  ProfileSlug,
 } from "@/types";
 
 /**
@@ -26,7 +35,7 @@ import type {
  * Desktop: input inline abaixo das mensagens
  */
 
-const GREETING = `Oi! Eu sou a assistente da we.wedme. Vou fazer algumas perguntas rápidas pra entender o sonho de vocês (data, lugar, estilo, número de convidados) e, com isso, montar uma curadoria personalizada de espaços e profissionais. Leva uns 3 minutos. Topam?`;
+const GREETING = `Oi! Eu sou a assistente da we.wedme. Vou fazer algumas perguntas rápidas pra entender o sonho de vocês e montar uma curadoria personalizada de espaços e profissionais. Leva uns 3 minutos. Topam?`;
 
 type LocalTurn = {
   id: string;
@@ -98,6 +107,7 @@ function composeAssistantMessage(
 export default function ComecePage() {
   const router = useRouter();
   const onboardingComplete = useCouple((s) => s.onboarding_complete);
+  const phone = useCouple((s) => s.phone);
   const partner_1_name = useCouple((s) => s.partner_1_name);
   const partner_2_name = useCouple((s) => s.partner_2_name);
   const wedding_date = useCouple((s) => s.wedding_date);
@@ -105,10 +115,11 @@ export default function ComecePage() {
   const state = useCouple((s) => s.state);
   const estimated_budget = useCouple((s) => s.estimated_budget);
   const guest_count = useCouple((s) => s.guest_count);
-  const email = useCouple((s) => s.email);
   const onboarding_history = useCouple((s) => s.onboarding_history);
   const applyOnboardingUpdates = useCouple((s) => s.applyOnboardingUpdates);
   const appendChatTurn = useCouple((s) => s.appendChatTurn);
+  const setProfile = useCouple((s) => s.setProfile);
+  const wedding_profile_slug = useCouple((s) => s.wedding_profile_slug);
 
   // Local UI state — espelha o histórico do store + estado de envio
   const [hydrated, setHydrated] = useState(false);
@@ -117,6 +128,14 @@ export default function ComecePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [transitionReady, setTransitionReady] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [audioOpen, setAudioOpen] = useState(false);
+
+  // Dream mode states
+  const [dreamMode, setDreamMode] = useState(false);
+  const [dreamText, setDreamText] = useState("");
+  const [dreamStage, setDreamStage] = useState<"asking" | "loading" | "revealed">("asking");
+  const [profileResult, setProfileResult] = useState<ClassifyDreamResponse | null>(null);
+  const dreamTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -137,12 +156,12 @@ export default function ComecePage() {
     }
   }, [onboarding_history.length]); // só na primeira hidratação
 
-  // Redireciona se onboarding já completo
+  // Redireciona se onboarding já completo e perfil já classificado
   useEffect(() => {
-    if (hydrated && onboardingComplete) {
-      router.replace("/comece/sonho");
+    if (hydrated && onboardingComplete && wedding_profile_slug) {
+      router.replace("/planejamento");
     }
-  }, [hydrated, onboardingComplete, router]);
+  }, [hydrated, onboardingComplete, wedding_profile_slug, router]);
 
   // Auto-scroll ao fim a cada nova mensagem.
   // Usa scrollTop direto no container (em vez de scrollIntoView) porque
@@ -165,6 +184,7 @@ export default function ComecePage() {
 
   // Conta campos coletados pra barra de progresso
   const collected: CollectedData = {
+    phone: phone ?? undefined,
     partner_1_name: partner_1_name ?? undefined,
     partner_2_name: partner_2_name ?? undefined,
     wedding_date: wedding_date ?? undefined,
@@ -172,15 +192,14 @@ export default function ComecePage() {
     state: state ?? undefined,
     estimated_budget: estimated_budget ?? undefined,
     guest_count: guest_count ?? undefined,
-    email: email ?? undefined,
   };
   const collectedCount = [
+    phone,
     partner_1_name && partner_2_name,
     wedding_date,
     city,
     estimated_budget,
     guest_count,
-    email,
   ].filter(Boolean).length;
   const progress = (collectedCount / 6) * 100;
 
@@ -264,9 +283,28 @@ export default function ComecePage() {
           });
         }
 
-        // Se a transição final chegou, mostra o botão grande de ir ao sonho
+        // Se a transição final chegou, entra no modo sonho
         if (data.next_field_to_ask === null) {
           setTransitionReady(true);
+          setDreamMode(true);
+
+          // Adiciona a pergunta do sonho como nova mensagem após um delay
+          setTimeout(() => {
+            const p1 = useCouple.getState().partner_1_name ?? "";
+            const p2 = useCouple.getState().partner_2_name ?? "";
+            const dreamQuestion = `Agora, ${p1} e ${p2}, a pergunta que mais importa:\n\nO que é o casamento para vocês, e como vocês imaginam ele?\n\nEscrevam o que vier ao coração. Pode ser uma palavra, um parágrafo, uma história inteira. Se preferirem, gravem um áudio.`;
+            const dreamTurn: LocalTurn = {
+              id: `a-dream-${Date.now()}`,
+              role: "assistant",
+              content: dreamQuestion,
+            };
+            setTurns((prev) => [...prev, dreamTurn]);
+            appendChatTurn({
+              role: "assistant",
+              content: dreamQuestion,
+              timestamp: new Date().toISOString(),
+            });
+          }, 1500);
         }
       } catch (err) {
         console.error("[comece] erro:", err);
@@ -291,6 +329,44 @@ export default function ComecePage() {
     ],
   );
 
+  async function handleDreamSubmit() {
+    if (dreamText.trim().length < 20) return;
+    setDreamStage("loading");
+
+    try {
+      const p1 = useCouple.getState().partner_1_name ?? "";
+      const p2 = useCouple.getState().partner_2_name ?? "";
+
+      const [responseRaw] = await Promise.all([
+        fetch("/api/classify-dream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dream_text: dreamText,
+            partner_names: `${p1} & ${p2}`,
+          }),
+        }),
+        new Promise((r) => setTimeout(r, 3500)),
+      ]);
+
+      if (!responseRaw.ok) throw new Error("API error");
+      const data = (await responseRaw.json()) as ClassifyDreamResponse;
+
+      setProfile(
+        data.profile_slug as ProfileSlug,
+        data.detected_intents,
+        dreamText,
+        data.confidence,
+      );
+      useCouple.getState().markOnboardingComplete();
+      setProfileResult(data);
+      setDreamStage("revealed");
+    } catch (err) {
+      console.error("[sonho] erro:", err);
+      setDreamStage("asking");
+    }
+  }
+
   /**
    * Botão "Topamos" — NÃO envia "Topamos" como mensagem do casal à IA.
    * Apenas transiciona para o estado "iniciado" e injeta a primeira pergunta
@@ -306,7 +382,7 @@ export default function ComecePage() {
       id: `a-intro-${Date.now()}`,
       role: "assistant",
       content:
-        "Que bom. Pra começar bem, como vocês se chamam? (Só o primeiro nome de cada um já basta.)",
+        "Que bom. Pra começar, qual o melhor WhatsApp pra gente se comunicar com vocês?",
     };
     setTurns((prev) => [...prev, firstQuestion]);
     appendChatTurn({
@@ -327,6 +403,10 @@ export default function ComecePage() {
         <p className="text-muted-foreground">Carregando…</p>
       </main>
     );
+  }
+
+  if (dreamStage === "loading") {
+    return <DreamLoading />;
   }
 
   return (
@@ -392,28 +472,49 @@ export default function ComecePage() {
 
           {isLoading && <TypingIndicator />}
 
-          {/* CTA final pra ir ao sonho */}
-          {transitionReady && !isLoading && (
-            <div className="flex justify-start mt-2">
-              <button
-                type="button"
-                onClick={() => {
-                  useCouple.getState().markOnboardingComplete();
-                  router.push("/comece/sonho");
-                }}
-                className="inline-flex items-center justify-center min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
-              >
-                Contar nosso sonho →
-              </button>
-            </div>
-          )}
+          {/* Perfil revelado inline */}
+          {dreamStage === "revealed" && profileResult && (() => {
+            const profileObj = profiles.find((p) => p.slug === profileResult.profile_slug);
+            if (!profileObj) return null;
+            return (
+              <div className="flex flex-col items-center text-center py-8 md:py-12 gap-6">
+                <Ornament size="xl" />
+                <Overline>Perfil identificado</Overline>
+                <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-foreground tracking-editorial leading-[1.05] max-w-2xl">
+                  {profileObj.name}
+                </h2>
+                <p className="font-display italic text-base md:text-xl text-muted-foreground max-w-md leading-relaxed">
+                  {profileObj.description}
+                </p>
+                <div className="max-w-md">
+                  <p className="text-sm text-muted-foreground mb-3 tracking-wide">
+                    Detectamos em vocês:
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {profileResult.detected_intents.map((intent) => (
+                      <Badge key={intent} variant="default" className="text-sm py-1.5 px-3">
+                        {intent}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => router.push("/planejamento")}
+                  className="inline-flex items-center justify-center min-h-14 px-8 md:px-10 py-4 rounded-sm bg-primary text-primary-foreground text-base md:text-lg font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 mt-4"
+                >
+                  Ver o caminho que montamos →
+                </button>
+              </div>
+            );
+          })()}
 
           <div ref={scrollAnchorRef} />
         </div>
       </div>
 
-      {/* Input — fixed bottom no mobile, inline em desktop */}
-      {hasStarted && !transitionReady && (
+      {/* Input do chat (campos do onboarding) */}
+      {hasStarted && !dreamMode && (
         <form
           onSubmit={handleSubmit}
           className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border md:relative md:border-t-0 md:bg-transparent md:safe-bottom-0"
@@ -438,6 +539,15 @@ export default function ComecePage() {
               style={{ fontSize: "16px" }}
             />
             <button
+              type="button"
+              onClick={() => setAudioOpen(true)}
+              disabled={isLoading}
+              className="shrink-0 inline-flex items-center justify-center min-w-12 min-h-12 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+              aria-label="Gravar áudio"
+            >
+              <Mic className="size-5" />
+            </button>
+            <button
               type="submit"
               disabled={isLoading || !inputValue.trim()}
               className="shrink-0 inline-flex items-center justify-center min-w-12 min-h-12 rounded-sm bg-primary text-primary-foreground hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
@@ -460,6 +570,57 @@ export default function ComecePage() {
           </div>
         </form>
       )}
+
+      {/* Input do sonho (textarea grande) */}
+      {dreamMode && dreamStage === "asking" && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border md:relative md:border-t-0 md:bg-transparent md:safe-bottom-0">
+          <div className="max-w-2xl mx-auto px-4 md:px-0 py-3 md:py-6 flex flex-col gap-3">
+            <textarea
+              ref={dreamTextareaRef}
+              value={dreamText}
+              onChange={(e) => setDreamText(e.target.value)}
+              placeholder="Escrevam o que vem à cabeça..."
+              rows={4}
+              className="w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary leading-relaxed"
+              style={{ fontSize: "16px" }}
+              aria-label="Texto do sonho do casamento"
+            />
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Mínimo 20 caracteres.</span>
+              <span aria-live="polite">{dreamText.length}</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleDreamSubmit}
+                disabled={dreamText.trim().length < 20}
+                className="flex-1 inline-flex items-center justify-center min-h-14 px-7 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+              >
+                Enviar nosso sonho →
+              </button>
+              <button
+                type="button"
+                onClick={() => setAudioOpen(true)}
+                className="inline-flex items-center justify-center gap-2 min-h-14 px-5 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                aria-label="Gravar áudio"
+              >
+                <Mic className="size-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <AudioRecorder
+        open={audioOpen}
+        onOpenChange={setAudioOpen}
+        onTranscribed={(text) => {
+          if (dreamMode) {
+            setDreamText(text);
+          } else {
+            sendMessage(text);
+          }
+        }}
+      />
     </main>
   );
 }

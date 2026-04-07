@@ -177,7 +177,7 @@ export default function DevSeedPage() {
       state: data.state,
       estimated_budget: data.budget,
       guest_count: data.guests,
-      email: `${data.p1.toLowerCase()}.${data.p2.toLowerCase()}@email.com`,
+      phone: "11 99999-0000",
       onboarding_complete: true,
       dream_text: data.dream,
       wedding_profile_slug: scenario.profile,

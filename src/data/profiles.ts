@@ -11,7 +11,7 @@ export const profiles: readonly Profile[] = [
     slug: "classico-atemporal",
     name: "Clássico Atemporal",
     description:
-      "Vocês sonham com tradições, elegância e detalhes que atravessam gerações. Um casamento refinado, com cerimônia formal e celebração que respira sofisticação.",
+      "Vocês sonham com tradições, elegância e detalhes que atravessam gerações. Uma celebração refinada, com cerimônia marcante e cada momento carregado de significado.",
     detection_keywords: [
       "tradição",
       "tradicional",
@@ -42,7 +42,7 @@ export const profiles: readonly Profile[] = [
     slug: "intimo-emocional",
     name: "Íntimo & Emocional",
     description:
-      "Um casamento pequeno, onde cada convidado importa e cada detalhe conta uma história. A emoção acima de tudo, e a certeza de que menos pode ser muito mais.",
+      "Um casamento profundo, onde cada convidado é essencial e cada momento respira significado. A emoção no centro de tudo, celebrando a verdade do que vocês sentem.",
     detection_keywords: [
       "íntimo",
       "intimista",
@@ -71,7 +71,7 @@ export const profiles: readonly Profile[] = [
     slug: "minimalista-moderno",
     name: "Minimalista Moderno",
     description:
-      "Design contemporâneo, paleta sóbria e uma celebração sem excessos. Só o que importa, feito com excelência, arquitetura, luz e atmosfera no lugar do exagero.",
+      "Design contemporâneo, paleta consciente e cada escolha feita com intenção. Arquitetura, luz e atmosfera criando algo que é só de vocês.",
     detection_keywords: [
       "minimalista",
       "moderno",
@@ -99,7 +99,7 @@ export const profiles: readonly Profile[] = [
     slug: "natureza-destination",
     name: "Natureza & Destination",
     description:
-      "Ao ar livre, cercados de verde, pé na areia ou debaixo de uma figueira centenária. Um casamento que respira liberdade e conexão com o lugar.",
+      "Ao ar livre, cercados de verde, pé na areia ou debaixo de uma árvore centenária. Um casamento que celebra a paisagem e a conexão de vocês com o lugar.",
     detection_keywords: [
       "natureza",
       "ar livre",
@@ -135,7 +135,7 @@ export const profiles: readonly Profile[] = [
     slug: "grande-celebracao",
     name: "Grande Celebração",
     description:
-      "Muitos convidados, festa até o sol nascer, pista cheia e comemoração sem medida. A alegria coletiva como protagonista, o tipo de casamento que vira história.",
+      "Uma celebração vibrante, pista cheia e alegria contagiante. Todos que vocês amam juntos, comemorando até o sol nascer. O tipo de casamento que vira história.",
     detection_keywords: [
       "festa",
       "grande",

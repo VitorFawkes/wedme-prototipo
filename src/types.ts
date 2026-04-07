@@ -165,13 +165,13 @@ export type TriggerRule = {
 // ============================================================
 
 export type CollectedData = {
+  phone?: string;
   partner_1_name?: string;
   partner_2_name?: string;
   wedding_date?: string;
   city?: string;
   state?: string;
   estimated_budget?: number;
-  email?: string;
   guest_count?: number;
 };
 
@@ -195,12 +195,12 @@ export type OnboardingStepResponse = {
   updates: CollectedData;
   assistant_reply: string;
   next_field_to_ask:
+    | "phone"
     | "partner_names"
     | "wedding_date"
     | "city"
     | "estimated_budget"
     | "guest_count"
-    | "email"
     | null;
   next_question: string;
   needs_clarification: boolean;

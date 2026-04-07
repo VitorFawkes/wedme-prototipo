@@ -13,13 +13,13 @@ type CoupleState = {
   // ============================================================
   // Dados do onboarding (briefing §11)
   // ============================================================
+  phone: string | null;
   partner_1_name: string | null;
   partner_2_name: string | null;
   wedding_date: string | null;
   city: string | null;
   state: string | null;
   estimated_budget: number | null;
-  email: string | null;
   guest_count: number | null;
 
   // Campos ricos opcionais (alimentam o site do casamento)
@@ -78,13 +78,13 @@ type CoupleState = {
 };
 
 const initialState = {
+  phone: null,
   partner_1_name: null,
   partner_2_name: null,
   wedding_date: null,
   city: null,
   state: null,
   estimated_budget: null,
-  email: null,
   guest_count: null,
   dance_song: null,
   how_they_met: null,

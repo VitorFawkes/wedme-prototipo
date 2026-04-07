@@ -295,7 +295,7 @@ export function SpecialistWidget() {
                   </h2>
                   <p className="text-sm text-muted-foreground mt-3 leading-relaxed max-w-sm mx-auto">
                     Isabela vai responder em alguns minutos. Vocês vão receber
-                    pelo email cadastrado.
+                    pelo WhatsApp cadastrado.
                   </p>
                 </motion.div>
               ) : (
