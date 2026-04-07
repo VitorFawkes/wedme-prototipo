@@ -167,10 +167,8 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
       ctx.wedding_profile_slug,
       currentCategory,
     );
-    // Pega o segundo do grid (briefing §6.2 #4)
-    if (sorted.length >= 2) {
-      vendorDestaque = sorted[1].name;
-    } else if (sorted.length === 1) {
+    // Pega o primeiro do grid (o mais relevante pro perfil do casal)
+    if (sorted.length >= 1) {
       vendorDestaque = sorted[0].name;
     }
   }

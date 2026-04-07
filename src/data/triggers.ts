@@ -69,8 +69,8 @@ export const triggers: readonly TriggerRule[] = [
     conditions: [{ type: "on_route", pattern: "/planejamento/" }],
     content: {
       icon: "Users",
-      title: "Outros casais começaram por aqui",
-      body: "Casais com um perfil parecido com o de vocês costumam escolher {vendor_destaque} nesta categoria. Fiquem à vontade pra explorar todas as opções.",
+      title: "Destaque nesta categoria",
+      body: "{vendor_destaque} é uma das opções mais escolhidas por casais com um estilo parecido com o de vocês.",
     },
   },
 
@@ -90,8 +90,8 @@ export const triggers: readonly TriggerRule[] = [
     ],
     content: {
       icon: "Clock",
-      title: "{data_extensa}",
-      body: "{Este_tipo} tem esta data disponível. Como é uma data concorrida, vale conferir com calma.",
+      title: "Data disponível",
+      body: "{Este_tipo} tem o dia de vocês livre ({data_extensa}).",
     },
   },
 
@@ -108,8 +108,8 @@ export const triggers: readonly TriggerRule[] = [
     conditions: [{ type: "on_route", pattern: "/oferta/" }],
     content: {
       icon: "Eye",
-      title: "{peer_count_live} casais olhando agora",
-      body: "{Este_tipo} está recebendo bastante interesse. Se gostarem, vale marcar uma conversa.",
+      title: "Bastante procurado",
+      body: "{Este_tipo} está entre os mais visitados da plataforma.",
     },
   },
 
