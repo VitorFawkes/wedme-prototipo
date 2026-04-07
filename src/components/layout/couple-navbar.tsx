@@ -7,11 +7,15 @@ import { Logo } from "@/components/layout/logo";
 import { useCouple } from "@/store/couple";
 
 /**
- * Navbar fina das rotas do casal — /planejamento, /meu-casamento, /checkout,
+ * Navbar fina das rotas do casal: /planejamento, /meu-casamento, /checkout,
  * /planejamento/[categoria], /oferta/[slug].
  *
- * Layout mobile (h-12): logo | nome do casal (truncado) | ícone reset
- * Layout desktop (h-14): logo | "Meu casamento" | nome do casal | reset
+ * Layout mobile (h-14): logo | nome do casal (truncado) | bot\u00e3o reset
+ * Layout desktop (h-16): logo | nome do casal | "Reiniciar simula\u00e7\u00e3o"
+ *
+ * O bot\u00e3o de reset \u00e9 vis\u00edvel em todos os tamanhos:
+ *  - Mobile: \u00edcone + label "Reiniciar" curto (cabe em 375px)
+ *  - Desktop: \u00edcone + "Reiniciar simula\u00e7\u00e3o" completo
  */
 export function CoupleNavbar() {
   const router = useRouter();
@@ -23,7 +27,11 @@ export function CoupleNavbar() {
     partner1 && partner2 ? `${partner1} & ${partner2}` : "Meu casamento";
 
   function handleReset() {
-    if (confirm("Reiniciar a demo? Todo o progresso será apagado.")) {
+    if (
+      confirm(
+        "Reiniciar a simula\u00e7\u00e3o? Todo o progresso ser\u00e1 apagado e voc\u00ea volta para o in\u00edcio.",
+      )
+    ) {
       reset();
       router.push("/");
     }
@@ -31,20 +39,18 @@ export function CoupleNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 safe-top safe-px bg-background/95 backdrop-blur-sm border-b border-border">
-      <nav className="flex items-center justify-between h-12 md:h-14 px-4 md:px-8 max-w-7xl mx-auto gap-3">
+      <nav className="flex items-center justify-between h-14 md:h-16 px-4 md:px-8 max-w-7xl mx-auto gap-3">
         <Link
           href="/"
           className="inline-flex items-center min-h-11 -ml-1 px-1 shrink-0"
-          aria-label="we.wedme — voltar para a home"
+          aria-label="we.wedme, voltar para a home"
         >
           <Logo className="text-base md:text-xl" />
         </Link>
 
-        {/* Nome do casal: centralizado em desktop, encostado à direita em mobile.
-            Renderizamos UMA vez só (sempre flex-1, alinhamento muda via classes).
-            Isso evita duplicação no DOM e no screen reader. */}
+        {/* Nome do casal: centralizado, truncado se muito longo. */}
         <div
-          className="flex-1 min-w-0 text-center md:text-center max-w-[40vw] md:max-w-none ml-auto md:ml-0"
+          className="flex-1 min-w-0 text-center max-w-[35vw] md:max-w-none"
           aria-label={`Casamento de ${coupleName}`}
         >
           <span className="font-display text-sm md:text-base text-muted-foreground truncate inline-block max-w-full">
@@ -55,13 +61,12 @@ export function CoupleNavbar() {
         <button
           type="button"
           onClick={handleReset}
-          className="inline-flex items-center justify-center min-w-11 min-h-11 text-muted-foreground hover:text-foreground transition-colors duration-200 shrink-0"
-          aria-label="Reiniciar demo"
+          className="inline-flex items-center justify-center gap-1.5 md:gap-2 min-h-11 px-3 md:px-4 rounded-sm border border-border text-foreground text-xs md:text-sm font-medium tracking-wide hover:bg-foreground hover:text-background hover:border-foreground transition-colors duration-200 shrink-0"
+          aria-label="Reiniciar simula\u00e7\u00e3o"
         >
-          <RotateCcw className="size-4" />
-          <span className="hidden lg:inline ml-2 text-xs uppercase tracking-widest">
-            Reiniciar
-          </span>
+          <RotateCcw className="size-3.5 md:size-4" aria-hidden="true" />
+          <span className="md:hidden">Reiniciar</span>
+          <span className="hidden md:inline">Reiniciar simula\u00e7\u00e3o</span>
         </button>
       </nav>
     </header>

@@ -76,7 +76,7 @@ export function TriggerRenderer() {
       {hasTopContent && (
         <div
           id="trigger-top-bars"
-          className="fixed top-12 md:top-14 left-0 right-0 z-30 safe-top"
+          className="fixed top-14 md:top-16 left-0 right-0 z-30 safe-top"
         >
           <AnimatePresence>
             {topBars.map((t) => (
