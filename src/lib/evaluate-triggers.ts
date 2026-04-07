@@ -68,6 +68,7 @@ export type TriggerEvalContext = {
   estimated_budget: number | null;
   guest_count: number | null;
   wedding_profile_slug: ProfileSlug | null;
+  dream_text: string | null;
   selections: Selection[];
   skipped_categories: CategorySlug[];
   dismissed_triggers: string[];
@@ -158,7 +159,8 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
   const routeMatch = ctx.pathname.match(/^\/planejamento\/([^/]+)/);
   const currentCategory = routeMatch?.[1] as CategorySlug | undefined;
 
-  // Vendor destaque para a prova social do gatilho #4
+  // Vendor destaque: usa o mesmo sort da página de categoria
+  // incluindo dreamText e city para que o destaque reflita o que o casal disse
   let vendorDestaque = "um dos profissionais selecionados";
   if (currentCategory) {
     const providers = getProvidersByCategory(currentCategory);
@@ -166,8 +168,9 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
       providers,
       ctx.wedding_profile_slug,
       currentCategory,
+      ctx.dream_text,
+      ctx.city,
     );
-    // Pega o primeiro do grid (o mais relevante pro perfil do casal)
     if (sorted.length >= 1) {
       vendorDestaque = sorted[0].name;
     }

@@ -234,6 +234,23 @@ function scoreVendor(
       "cidade",
       "urbano",
       "industrial",
+      "família",
+      "familia",
+      "aconchegante",
+      "romântico",
+      "romantico",
+      "sofisticado",
+      "luxo",
+      "rústico",
+      "boho",
+      "tropical",
+      "destination",
+      "sunset",
+      "cerimônia",
+      "ceremonia",
+      "ao ar livre",
+      "pé na areia",
+      "pe na areia",
     ];
 
     for (const kw of KEYWORDS) {

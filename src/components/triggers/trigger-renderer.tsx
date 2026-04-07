@@ -154,6 +154,7 @@ export function useTriggers(filter?: {
   const estimated_budget = useCouple((s) => s.estimated_budget);
   const guest_count = useCouple((s) => s.guest_count);
   const wedding_profile_slug = useCouple((s) => s.wedding_profile_slug);
+  const dream_text = useCouple((s) => s.dream_text);
   const selections = useCouple((s) => s.selections);
   const skipped_categories = useCouple((s) => s.skipped_categories);
   const dismissed_triggers = useCouple((s) => s.dismissed_triggers);
@@ -170,6 +171,7 @@ export function useTriggers(filter?: {
       estimated_budget,
       guest_count,
       wedding_profile_slug,
+      dream_text,
       selections,
       skipped_categories,
       dismissed_triggers,
@@ -190,6 +192,7 @@ export function useTriggers(filter?: {
     estimated_budget,
     guest_count,
     wedding_profile_slug,
+    dream_text,
     selections,
     skipped_categories,
     dismissed_triggers,
