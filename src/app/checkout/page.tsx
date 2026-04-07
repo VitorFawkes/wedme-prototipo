@@ -109,7 +109,7 @@ export default function CheckoutPage() {
     <>
       <CoupleNavbar />
 
-      <main className="min-h-dvh pt-12 md:pt-14 pb-16 safe-px">
+      <main className="min-h-dvh pt-couple pb-16 safe-px">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10">
           <Link
             href="/meu-casamento"

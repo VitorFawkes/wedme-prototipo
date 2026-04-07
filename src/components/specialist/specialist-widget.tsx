@@ -63,12 +63,14 @@ export function SpecialistWidget() {
 
   return (
     <>
-      {/* FAB */}
+      {/* FAB — z-40, posicionado acima do progress footer / bottom sheet
+          de preço (~80-96px). Floating badge agora está no topo em mobile,
+          então não há colisão. */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.4 }}
-        className="fixed z-20 safe-bottom bottom-20 right-4 md:bottom-6 md:right-6"
+        className="fixed z-40 safe-bottom bottom-24 right-4 md:bottom-6 md:right-6"
       >
         <button
           type="button"

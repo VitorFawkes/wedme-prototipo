@@ -129,6 +129,8 @@ function checkCondition(
       return ctx.guest_count != null && ctx.guest_count > 0;
     case "on_route":
       return ctx.pathname.startsWith(cond.pattern);
+    case "on_route_exact":
+      return ctx.pathname === cond.path;
     default:
       return false;
   }

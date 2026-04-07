@@ -132,7 +132,8 @@ export type TriggerCondition =
   | { type: "category_not_selected"; slug: CategorySlug }
   | { type: "wedding_date_set" }
   | { type: "guest_count_set" }
-  | { type: "on_route"; pattern: string };
+  | { type: "on_route"; pattern: string }
+  | { type: "on_route_exact"; path: string };
 
 export type TriggerPosition =
   | "top_bar"

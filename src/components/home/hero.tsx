@@ -19,6 +19,8 @@ export function Hero() {
         alt="Welucci Estaiada — vista para a Ponte Estaiada de São Paulo"
         fill
         priority
+        loading="eager"
+        fetchPriority="high"
         sizes="100vw"
         className="object-cover -z-10"
       />

@@ -33,6 +33,59 @@ type LocalTurn = {
   content: string;
 };
 
+/**
+ * Compõe a mensagem final da assistente combinando reply + next_question.
+ *
+ * Defesa contra IA duplicando: se assistant_reply já contiver a pergunta
+ * (ou algo muito parecido), NÃO concatena — usa só o reply.
+ */
+function composeAssistantMessage(
+  reply: string | undefined,
+  nextQuestion: string | undefined,
+  needsClarification: boolean,
+): string {
+  const r = (reply ?? "").trim();
+  const q = (nextQuestion ?? "").trim();
+
+  // Sem pergunta seguinte, ou em modo clarificação → só o reply
+  if (!q || needsClarification) return r || q;
+  if (!r) return q;
+
+  // Detecta se o reply já termina com uma pergunta (provavelmente é a próxima)
+  // ou se as últimas palavras do reply aparecem na pergunta
+  const replyEndsInQuestion = /\?\s*$/.test(r);
+
+  // Pega a parte do reply que pode estar duplicada (último ?)
+  const replyLastQuestion = r.match(/[^.!?]*\?\s*$/)?.[0]?.trim() ?? "";
+
+  // Normaliza pra comparar (lowercase, remove pontuação, espaços extras)
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/[.,!?;:"'()]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const normReplyQ = norm(replyLastQuestion);
+  const normNext = norm(q);
+
+  // Se o reply já termina em pergunta E as palavras-chave coincidem ≥ 60%,
+  // considera duplicado e descarta a próxima pergunta
+  if (replyEndsInQuestion && normReplyQ.length > 0) {
+    const replyWords = new Set(normReplyQ.split(" ").filter((w) => w.length > 3));
+    const nextWords = normNext.split(" ").filter((w) => w.length > 3);
+    if (nextWords.length === 0) return r;
+    const overlap =
+      nextWords.filter((w) => replyWords.has(w)).length / nextWords.length;
+    if (overlap >= 0.5) {
+      // Duplicação detectada — usa só o reply (que já tem a pergunta)
+      return r;
+    }
+  }
+
+  return `${r}\n\n${q}`;
+}
+
 export default function ComecePage() {
   const router = useRouter();
   const onboardingComplete = useCouple((s) => s.onboarding_complete);
@@ -57,6 +110,7 @@ export default function ComecePage() {
   const [hasStarted, setHasStarted] = useState(false);
 
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Hidrata e popula turns do histórico salvo
@@ -81,9 +135,23 @@ export default function ComecePage() {
     }
   }, [hydrated, onboardingComplete, router]);
 
-  // Auto-scroll ao fim a cada nova mensagem
+  // Auto-scroll ao fim a cada nova mensagem.
+  // Usa scrollTop direto no container (em vez de scrollIntoView) porque
+  // scrollIntoView não funciona consistente em iOS quando há um elemento
+  // fixed (input do chat) e o teclado virtual está aberto.
   useEffect(() => {
-    scrollAnchorRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+      return;
+    }
+    // Fallback global
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    });
   }, [turns.length, isLoading]);
 
   // Conta campos coletados pra barra de progresso
@@ -166,11 +234,13 @@ export default function ComecePage() {
           applyOnboardingUpdates(data.updates);
         }
 
-        // Adiciona resposta da assistente: reply + (se houver) próxima pergunta
-        const assistantContent =
-          data.next_question && !data.needs_clarification
-            ? `${data.assistant_reply}\n\n${data.next_question}`
-            : data.assistant_reply || data.next_question;
+        // Adiciona resposta da assistente: reply + (se houver) próxima pergunta.
+        // Defesa contra IA duplicando a pergunta dentro de assistant_reply.
+        const assistantContent = composeAssistantMessage(
+          data.assistant_reply,
+          data.next_question,
+          data.needs_clarification,
+        );
 
         if (assistantContent && assistantContent.trim()) {
           const assistantTurn: LocalTurn = {
@@ -255,7 +325,10 @@ export default function ComecePage() {
       </header>
 
       {/* Conversa */}
-      <div className="flex-1 overflow-y-auto pt-20 md:pt-24 pb-40 md:pb-32 safe-px">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto pt-20 md:pt-24 pb-40 md:pb-32 safe-px"
+      >
         <div className="max-w-2xl mx-auto px-4 md:px-0 flex flex-col gap-4 md:gap-5">
           {/* Saudação fixa inicial */}
           <ChatBubble role="assistant">{GREETING}</ChatBubble>

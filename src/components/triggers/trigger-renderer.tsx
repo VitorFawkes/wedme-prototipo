@@ -39,11 +39,45 @@ export function TriggerRenderer() {
     });
   }, [triggers, markFired]);
 
+  // Mede a altura total dos top bars ativos pra empurrar o conteúdo
+  // (evita sobreposição com hero da página) — via CSS variable global
+  useEffect(() => {
+    const calcHeight = () => {
+      const el = document.getElementById("trigger-top-bars");
+      const h = el ? el.offsetHeight : 0;
+      document.documentElement.style.setProperty(
+        "--trigger-top-bars-h",
+        `${h}px`,
+      );
+    };
+    calcHeight();
+    // Recalcula em resize (mobile/desktop variation)
+    window.addEventListener("resize", calcHeight);
+    // Recalcula quando triggers mudam
+    const obs = new ResizeObserver(calcHeight);
+    const el = document.getElementById("trigger-top-bars");
+    if (el) obs.observe(el);
+    return () => {
+      window.removeEventListener("resize", calcHeight);
+      obs.disconnect();
+    };
+  }, [topBars.length]);
+
+  // Em mobile, os floating badges também ficam dentro do container do topo
+  // (in-flow) pra não sobrepor conteúdo. Em desktop, o badge se renderiza
+  // fixed bottom-right (controlado pelo próprio TriggerFloatingBadge).
+  // Por isso o badge é renderizado tanto aqui (mobile in-flow) quanto fora
+  // (desktop fixed). O componente faz hide/show via classes md:.
+  const hasTopContent = topBars.length > 0 || badges.length > 0;
+
   return (
     <>
-      {/* Top bars stackam acima */}
-      {topBars.length > 0 && (
-        <div className="fixed top-12 md:top-14 left-0 right-0 z-30 safe-top">
+      {/* Container fixo do topo — top bars + badges (mobile in-flow) */}
+      {hasTopContent && (
+        <div
+          id="trigger-top-bars"
+          className="fixed top-12 md:top-14 left-0 right-0 z-30 safe-top"
+        >
           <AnimatePresence>
             {topBars.map((t) => (
               <TriggerTopBar
@@ -53,19 +87,22 @@ export function TriggerRenderer() {
               />
             ))}
           </AnimatePresence>
+          {/* Spacer entre top bars e floating badges quando ambos presentes */}
+          {topBars.length > 0 && badges.length > 0 && (
+            <div className="md:hidden h-2" aria-hidden="true" />
+          )}
+          {/* Floating badges em mobile — só renderiza a versão mobile aqui */}
+          <AnimatePresence>
+            {badges.slice(0, 1).map((t) => (
+              <TriggerFloatingBadge
+                key={`mobile-${t.rule.slug}`}
+                trigger={t}
+                onDismiss={() => dismiss(t.rule.slug)}
+              />
+            ))}
+          </AnimatePresence>
         </div>
       )}
-
-      {/* Floating badges (max 1 visível por vez) */}
-      <AnimatePresence>
-        {badges.slice(0, 1).map((t) => (
-          <TriggerFloatingBadge
-            key={t.rule.slug}
-            trigger={t}
-            onDismiss={() => dismiss(t.rule.slug)}
-          />
-        ))}
-      </AnimatePresence>
 
       {/* Modais (max 1) */}
       {modals.slice(0, 1).map((t) => (

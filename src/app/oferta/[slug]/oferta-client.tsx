@@ -6,7 +6,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Star, Check, X as XIcon } from "lucide-react";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
-import { TriggerRenderer } from "@/components/triggers/trigger-renderer";
+import {
+  TriggerRenderer,
+  useInlineTriggers,
+} from "@/components/triggers/trigger-renderer";
+import { TriggerInlineCard } from "@/components/triggers/trigger-inline-card";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { Lightbox } from "@/components/oferta/lightbox";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +34,9 @@ export function OfertaClient({ slug }: { slug: string }) {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [confirmingPackage, setConfirmingPackage] = useState(false);
+
+  const { triggers: inlineTriggers, dismiss: dismissTrigger } =
+    useInlineTriggers();
 
   useEffect(() => {
     setHydrated(true);
@@ -79,7 +86,7 @@ export function OfertaClient({ slug }: { slug: string }) {
       <CoupleNavbar />
       <TriggerRenderer />
 
-      <main className="min-h-dvh pt-12 md:pt-14 pb-32 md:pb-16 safe-px">
+      <main className="min-h-dvh pt-couple pb-32 md:pb-16 safe-px">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
           {/* Breadcrumb */}
           <Link
@@ -89,6 +96,19 @@ export function OfertaClient({ slug }: { slug: string }) {
             <ChevronLeft className="size-4 mr-1" />
             {category?.name ?? "Voltar"}
           </Link>
+
+          {/* Inline triggers (match-perfil etc) */}
+          {hydrated && inlineTriggers.length > 0 && (
+            <div className="mb-6 md:mb-8 space-y-4">
+              {inlineTriggers.map((t) => (
+                <TriggerInlineCard
+                  key={t.rule.slug}
+                  trigger={t}
+                  onDismiss={() => dismissTrigger(t.rule.slug)}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Galeria hero */}
           <div className="space-y-2 md:space-y-3 mb-8 md:mb-12">

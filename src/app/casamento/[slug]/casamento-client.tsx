@@ -268,9 +268,7 @@ export function CasamentoClient({ slug }: { slug: string }) {
               {richGallery.map((img, i) => (
                 <div
                   key={`${img}-${i}`}
-                  className={`relative aspect-square rounded-sm overflow-hidden bg-background ${
-                    i === 0 || i === 5 ? "row-span-2 aspect-auto" : ""
-                  }`}
+                  className="relative aspect-square rounded-sm overflow-hidden bg-background"
                 >
                   <Image
                     src={img}
@@ -444,9 +442,35 @@ export function CasamentoClient({ slug }: { slug: string }) {
 function Countdown({ weddingDate }: { weddingDate: string }) {
   const [now, setNow] = useState(() => Date.now());
 
+  // Atualiza por minuto, mas pausa quando a aba está em background
+  // (Page Visibility API) — economiza bateria em mobile
   useEffect(() => {
-    const interval = setInterval(() => setNow(Date.now()), 1000 * 60); // update por minuto
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    const start = () => {
+      if (interval) return;
+      setNow(Date.now()); // update imediato ao voltar
+      interval = setInterval(() => setNow(Date.now()), 1000 * 60);
+    };
+    const stop = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    if (document.visibilityState === "visible") start();
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") start();
+      else stop();
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const diff = useMemo(() => {

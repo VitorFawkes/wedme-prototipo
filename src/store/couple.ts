@@ -70,6 +70,7 @@ type CoupleState = {
   addSelection: (s: Selection) => void;
   removeSelection: (categorySlug: CategorySlug) => void;
   skipCategory: (slug: CategorySlug) => void;
+  unskipCategory: (slug: CategorySlug) => void;
   dismissTrigger: (slug: string) => void;
   markTriggerFired: (slug: string) => void;
   setStatus: (s: JourneyStatus) => void;
@@ -177,6 +178,13 @@ export const useCouple = create<CoupleState>()(
             ? state.skipped_categories
             : [...state.skipped_categories, slug],
           selections: state.selections.filter((s) => s.category_slug !== slug),
+        })),
+
+      unskipCategory: (slug) =>
+        set((state) => ({
+          skipped_categories: state.skipped_categories.filter(
+            (c) => c !== slug,
+          ),
         })),
 
       dismissTrigger: (slug) =>

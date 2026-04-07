@@ -29,7 +29,7 @@ export const triggers: readonly TriggerRule[] = [
     style: "prominent",
     conditions: [
       { type: "categories_selected_lte", value: 0 },
-      { type: "on_route", pattern: "/planejamento" },
+      { type: "on_route_exact", path: "/planejamento" },
     ],
     content: {
       icon: "Sparkles",
@@ -163,7 +163,7 @@ export const triggers: readonly TriggerRule[] = [
     conditions: [
       { type: "categories_selected_gte", value: 3 },
       { type: "total_confirmed_gte", value: 20000 },
-      { type: "on_route", pattern: "/meu-casamento" },
+      { type: "on_route_exact", path: "/meu-casamento" },
     ],
     content: {
       icon: "ShieldCheck",
@@ -186,7 +186,7 @@ export const triggers: readonly TriggerRule[] = [
     style: "normal",
     conditions: [
       { type: "total_confirmed_between", min_pct: 0.7, max_pct: 0.95 },
-      { type: "on_route", pattern: "/meu-casamento" },
+      { type: "on_route_exact", path: "/meu-casamento" },
     ],
     content: {
       icon: "Target",
@@ -206,7 +206,7 @@ export const triggers: readonly TriggerRule[] = [
     position: "inline_card",
     style: "subtle",
     conditions: [
-      { type: "on_route", pattern: "/planejamento/local" },
+      { type: "on_route_exact", path: "/planejamento/local" },
       { type: "guest_count_set" },
     ],
     content: {

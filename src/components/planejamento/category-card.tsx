@@ -56,7 +56,7 @@ export function CategoryCard({
   const isSelected = !!selection;
   const vendor = selection ? getVendorOrVenueBySlug(selection.vendor_slug) : null;
   const skipCategory = useCouple((s) => s.skipCategory);
-  const removeSelection = useCouple((s) => s.removeSelection);
+  const unskipCategory = useCouple((s) => s.unskipCategory);
   const [confirmingSkip, setConfirmingSkip] = useState(false);
 
   function handleSkip(e: React.MouseEvent) {
@@ -81,14 +81,7 @@ export function CategoryCard({
   function handleUnskip(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    // Remove da lista de puladas
-    removeSelection(category.slug as CategorySlug); // não remove nada, mas ok
-    // Forçar unskip: chama o store manualmente
-    useCouple.setState((state) => ({
-      skipped_categories: state.skipped_categories.filter(
-        (c) => c !== category.slug,
-      ),
-    }));
+    unskipCategory(category.slug as CategorySlug);
   }
 
   // ============================================================
@@ -126,23 +119,34 @@ export function CategoryCard({
     );
   }
 
+  // ============================================================
+  // Estado: NORMAL ou SELECTED — usa pattern "stretched link overlay"
+  // <article> com <Link absolute inset-0> + botão pular relative z-10
+  // (HTML válido, sem <button> aninhado em <a>)
+  // ============================================================
   return (
-    <Link
-      href={`/planejamento/${category.slug}`}
+    <article
       className={cn(
-        "group relative block rounded-md border overflow-hidden transition-all duration-300 hover:shadow-lg active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[200px] md:min-h-[220px] flex flex-col",
+        "group relative rounded-md border overflow-hidden transition-all duration-300 hover:shadow-lg min-h-[200px] md:min-h-[220px] flex flex-col",
         isSelected
           ? "bg-primary/5 border-primary/30"
           : "bg-card border-border",
       )}
     >
+      {/* Stretched link cobre todo o card EXCETO os botões z-10 abaixo */}
+      <Link
+        href={`/planejamento/${category.slug}`}
+        className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-md"
+        aria-label={`Ver opções de ${category.name}`}
+      />
+
       {isSelected && (
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-foreground/90 text-background text-xs font-medium tracking-wide px-2.5 py-1 rounded-sm backdrop-blur-sm z-10">
+        <span className="absolute top-3 right-3 inline-flex items-center gap-1 bg-foreground/90 text-background text-xs font-medium tracking-wide px-2.5 py-1 rounded-sm backdrop-blur-sm z-10 pointer-events-none">
           <Check className="size-3" /> Escolhido
         </span>
       )}
 
-      <div className="flex items-start justify-between p-5 md:p-6 gap-3">
+      <div className="flex items-start justify-between p-5 md:p-6 gap-3 pointer-events-none">
         <span className="font-display text-3xl md:text-4xl font-medium text-muted-foreground tracking-editorial leading-none">
           {String(order).padStart(2, "0")}
         </span>
@@ -150,15 +154,17 @@ export function CategoryCard({
       </div>
 
       <div className="px-5 md:px-6 pb-5 md:pb-6 mt-auto">
-        <h3 className="font-display text-xl md:text-2xl font-medium text-foreground tracking-editorial leading-tight mb-1">
-          {category.name}
-        </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-1">
-          {category.short_description}
-        </p>
+        <div className="pointer-events-none">
+          <h3 className="font-display text-xl md:text-2xl font-medium text-foreground tracking-editorial leading-tight mb-1">
+            {category.name}
+          </h3>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-1">
+            {category.short_description}
+          </p>
+        </div>
 
         {isSelected && vendor ? (
-          <div className="flex items-center gap-3 pt-3 border-t border-primary/20">
+          <div className="flex items-center gap-3 pt-3 border-t border-primary/20 pointer-events-none">
             <div className="relative shrink-0 size-10 rounded-sm overflow-hidden bg-muted">
               <Image
                 src={vendor.cover}
@@ -178,7 +184,7 @@ export function CategoryCard({
             </div>
           </div>
         ) : confirmingSkip ? (
-          <div className="flex items-center gap-2 pt-2">
+          <div className="flex items-center gap-2 pt-2 relative z-10">
             <button
               type="button"
               onClick={confirmSkip}
@@ -197,13 +203,13 @@ export function CategoryCard({
           </div>
         ) : (
           <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center text-sm font-medium text-primary tracking-wide">
+            <span className="inline-flex items-center text-sm font-medium text-primary tracking-wide pointer-events-none">
               Ver opções →
             </span>
             <button
               type="button"
               onClick={handleSkip}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors min-h-8 px-2 -mr-2"
+              className="relative z-10 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors min-h-8 px-2 -mr-2"
               aria-label={`Pular ${category.name}`}
               title="Pular esta categoria"
             >
@@ -213,6 +219,6 @@ export function CategoryCard({
           </div>
         )}
       </div>
-    </Link>
+    </article>
   );
 }

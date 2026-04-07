@@ -43,11 +43,22 @@ export default function SonhoPage() {
 
   useEffect(() => {
     setHydrated(true);
-    // Se já tem perfil definido, vai direto pra revelação
-    if (wedding_profile_slug) {
-      // permite revisitar a página sem refazer
+  }, []);
+
+  // Se o casal já tem perfil classificado e volta nesta página por engano,
+  // redireciona pra /planejamento (já passaram daqui). Não bloqueia o caso
+  // de "Contar o sonho de novo" porque setamos profileResult ao revelar e
+  // só checamos quando stage === "asking" sem profileResult.
+  useEffect(() => {
+    if (
+      hydrated &&
+      wedding_profile_slug &&
+      stage === "asking" &&
+      !profileResult
+    ) {
+      router.replace("/planejamento");
     }
-  }, [wedding_profile_slug]);
+  }, [hydrated, wedding_profile_slug, stage, profileResult, router]);
 
   async function handleSubmit() {
     if (dreamText.trim().length < 20) return;

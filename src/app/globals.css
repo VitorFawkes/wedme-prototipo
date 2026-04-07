@@ -217,6 +217,18 @@
     background-color: var(--overlay-dark-80);
   }
 
+  /* padding-top que reserva espaço pra CoupleNavbar (h-12 mobile / h-14 desktop)
+     + altura dinâmica de top bars de trigger (calculada via JS no
+     trigger-renderer e exposta como CSS var --trigger-top-bars-h) */
+  .pt-couple {
+    padding-top: calc(3rem + var(--trigger-top-bars-h, 0px));
+  }
+  @media (min-width: 768px) {
+    .pt-couple {
+      padding-top: calc(3.5rem + var(--trigger-top-bars-h, 0px));
+    }
+  }
+
   /* tracking editorial usado em headings display */
   .tracking-editorial {
     letter-spacing: 0.01em;

@@ -46,10 +46,21 @@ export function AudioRecorder({
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    // Para o MediaRecorder se ainda ativo (evita estado anômalo)
+    const rec = mediaRecorderRef.current;
+    if (rec && rec.state !== "inactive") {
+      try {
+        rec.stop();
+      } catch {
+        // ignora erros de stop em estado já parado
+      }
+    }
+    // Para os tracks de áudio (libera microfone)
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
+    mediaRecorderRef.current = null;
   }, []);
 
   // Cleanup ao fechar modal

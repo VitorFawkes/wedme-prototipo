@@ -68,7 +68,7 @@ export default function PlanejamentoPage() {
       <CoupleNavbar />
       <TriggerRenderer />
 
-      <main className="min-h-dvh pt-12 md:pt-14 pb-32 safe-px">
+      <main className="min-h-dvh pt-couple pb-32 safe-px">
         {/* Hero compacto */}
         <section className="bg-muted px-4 md:px-12 py-12 md:py-16 text-center">
           <Overline className="mb-3 md:mb-4">

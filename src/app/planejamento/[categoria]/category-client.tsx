@@ -51,7 +51,7 @@ export function CategoryClient({
       <CoupleNavbar />
       <TriggerRenderer />
 
-      <main className="min-h-dvh pt-12 md:pt-14 pb-32 safe-px">
+      <main className="min-h-dvh pt-couple pb-32 safe-px">
         <div className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-12">
           {/* Voltar */}
           <Link
