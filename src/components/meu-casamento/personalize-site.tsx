@@ -131,6 +131,11 @@ export function PersonalizeSite() {
     recorderRef.current = null;
   }
 
+  function restartRec(field: "song" | "story") {
+    discardRec();
+    setTimeout(() => startRec(field), 100);
+  }
+
   const timeDisplay = `${Math.floor(recSeconds / 60)}:${(recSeconds % 60).toString().padStart(2, "0")}`;
 
   if (!hydrated) return null;
@@ -180,8 +185,8 @@ export function PersonalizeSite() {
                   <div className="flex gap-2 w-full">
                     <button type="button" onClick={resumeRec} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm border border-border bg-card text-foreground text-xs font-medium hover:border-primary transition-colors"><Play className="size-4" /> Retomar</button>
                     <button type="button" onClick={sendRec} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm bg-primary text-primary-foreground text-xs font-medium hover:bg-brand-wine transition-colors"><Send className="size-3.5" /> Enviar</button>
+                    <button type="button" onClick={() => restartRec("song")} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm border border-border bg-card text-foreground text-xs font-medium hover:border-primary transition-colors"><Mic className="size-3.5" /> Recomeçar</button>
                   </div>
-                  <button type="button" onClick={discardRec} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Descartar</button>
                 </>
               ) : (
                 <>
@@ -239,8 +244,8 @@ export function PersonalizeSite() {
                   <div className="flex gap-2 w-full">
                     <button type="button" onClick={resumeRec} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm border border-border bg-card text-foreground text-xs font-medium hover:border-primary transition-colors"><Play className="size-4" /> Retomar</button>
                     <button type="button" onClick={sendRec} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm bg-primary text-primary-foreground text-xs font-medium hover:bg-brand-wine transition-colors"><Send className="size-3.5" /> Enviar</button>
+                    <button type="button" onClick={() => restartRec("story")} className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-10 rounded-sm border border-border bg-card text-foreground text-xs font-medium hover:border-primary transition-colors"><Mic className="size-3.5" /> Recomeçar</button>
                   </div>
-                  <button type="button" onClick={discardRec} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Descartar</button>
                 </>
               ) : (
                 <>

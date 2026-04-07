@@ -747,31 +747,32 @@ export default function ComecePage() {
                 <span className="font-display text-2xl text-foreground tabular-nums">
                   {Math.floor(inlineSeconds / 60)}:{(inlineSeconds % 60).toString().padStart(2, "0")}
                 </span>
-                <div className="flex items-center gap-3 w-full">
+                <div className="flex items-center gap-2 w-full">
                   <button
                     type="button"
                     onClick={inlineResumeRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-14 rounded-sm border border-border bg-card text-foreground text-base font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
                   >
-                    <Play className="size-5" />
+                    <Play className="size-4" />
                     Retomar
                   </button>
                   <button
                     type="button"
                     onClick={inlineSendRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-14 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
                   >
                     <Send className="size-4" />
                     Enviar
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => { inlineDiscardRecording(); inlineStartRecording(); }}
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                  >
+                    <Mic className="size-4" />
+                    Recomeçar
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => { inlineDiscardRecording(); if (!dreamMode) setAudioMode(false); }}
-                  className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Descartar
-                </button>
               </div>
             ) : inlineRecording ? (
               <div className="flex items-center gap-4 w-full justify-center">

@@ -174,90 +174,48 @@ function scoreVendor(
     score += 100;
   }
 
-  // 2. Dream keywords match
+  // 2. Dream text match (inteligente)
+  // Em vez de lista fixa de keywords, extrai palavras significativas
+  // do que o casal disse e cruza com o conteúdo do vendor.
+  // Isso captura qualquer termo que o casal use naturalmente.
   if (dreamText && dreamText.length > 0) {
-    const dreamLower = dreamText.toLowerCase();
-    const haystack = [
-      vendor.tagline,
-      vendor.bio,
-      ...(vendor.highlights ?? []),
-      vendor.name,
-    ]
-      .join(" ")
-      .toLowerCase();
+    const normalize = (s: string) =>
+      s.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 
-    // Lista de palavras-chave que importam pra matching de estilo
-    const KEYWORDS = [
-      "praia",
-      "areia",
-      "mar",
-      "litoral",
-      "natureza",
-      "jardim",
-      "verde",
-      "campo",
-      "fazenda",
-      "rústico",
-      "rustico",
-      "sítio",
-      "sitio",
-      "vintage",
-      "moderno",
-      "minimalista",
-      "clean",
-      "contemporâneo",
-      "contemporaneo",
-      "clássico",
-      "classico",
-      "tradição",
-      "tradicao",
-      "tradicional",
-      "elegante",
-      "íntimo",
-      "intimo",
-      "intimista",
-      "pequeno",
-      "grande",
-      "festa",
-      "dança",
-      "danca",
-      "balada",
-      "pôr do sol",
-      "por do sol",
-      "entardecer",
-      "dia",
-      "noite",
-      "vista",
-      "varanda",
-      "terraço",
-      "terraco",
-      "cidade",
-      "urbano",
-      "industrial",
-      "família",
-      "familia",
-      "aconchegante",
-      "romântico",
-      "romantico",
-      "sofisticado",
-      "luxo",
-      "rústico",
-      "boho",
-      "tropical",
-      "destination",
-      "sunset",
-      "cerimônia",
-      "ceremonia",
-      "ao ar livre",
-      "pé na areia",
-      "pe na areia",
-    ];
+    const dreamNorm = normalize(dreamText);
+    const haystackNorm = normalize(
+      [vendor.tagline, vendor.bio, ...(vendor.highlights ?? []), vendor.name].join(" ")
+    );
 
-    for (const kw of KEYWORDS) {
-      if (dreamLower.includes(kw) && haystack.includes(kw)) {
-        score += 30;
+    // Palavras sem significado (stopwords) que não devem contar como match
+    const STOPWORDS = new Set([
+      "que", "com", "para", "por", "uma", "uns", "dos", "das", "nos", "nas",
+      "mas", "mais", "muito", "como", "ser", "ter", "foi", "vai", "vou",
+      "isso", "isso", "este", "essa", "esse", "dele", "dela", "eles", "elas",
+      "meu", "minha", "seu", "sua", "nosso", "nossa", "todo", "toda", "todos",
+      "cada", "onde", "quando", "quem", "porque", "pois", "ate", "sem", "num",
+      "nao", "sim", "bem", "mal", "ainda", "tambem", "depois", "antes",
+      "sobre", "entre", "desde", "pode", "quer", "gente", "voces", "dia",
+    ]);
+
+    // Extrai palavras do dream com 4+ caracteres e que não são stopwords
+    const dreamWords = dreamNorm.split(" ")
+      .filter((w) => w.length >= 4 && !STOPWORDS.has(w));
+
+    // Conta quantas palavras do dream aparecem no vendor
+    let matches = 0;
+    for (const word of dreamWords) {
+      if (haystackNorm.includes(word)) {
+        matches++;
       }
     }
+
+    // Pontuação proporcional: cada match vale 20, máximo 120
+    score += Math.min(matches * 20, 120);
   }
 
   // 3. City/region match
