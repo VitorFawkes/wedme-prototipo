@@ -7,29 +7,27 @@ import { Logo } from "@/components/layout/logo";
  * bg-foreground text-background. Mobile: stack. Desktop: 3 colunas.
  */
 
+/**
+ * Colunas do footer. Os links abaixo apontam para âncoras dentro da home,
+ * que existem de fato (cada seção tem id próprio). Mantemos apenas
+ * navegação real — links institucionais "Sobre/Imprensa/etc" foram
+ * removidos porque ainda não têm destino e parar em # é decepção.
+ */
 const COLUMNS = [
   {
     title: "Plataforma",
     links: [
-      { label: "Como funciona", href: "/" },
-      { label: "Espaços parceiros", href: "/" },
-      { label: "Depoimentos", href: "/" },
+      { label: "Como funciona", href: "/#como-funciona" },
+      { label: "Espaços parceiros", href: "/#venues" },
+      { label: "Depoimentos", href: "/#depoimentos" },
+      { label: "Perguntas frequentes", href: "/#faq" },
     ],
   },
   {
-    title: "Institucional",
+    title: "Para casais",
     links: [
-      { label: "Sobre nós", href: "#" },
-      { label: "Curadoria", href: "#" },
-      { label: "Garantia we.wedme", href: "#" },
-    ],
-  },
-  {
-    title: "Contato",
-    links: [
-      { label: "Atendimento", href: "#" },
-      { label: "Imprensa", href: "#" },
-      { label: "Trabalhe conosco", href: "#" },
+      { label: "Planejar meu casamento", href: "/comece" },
+      { label: "Meu casamento", href: "/meu-casamento" },
     ],
   },
 ] as const;
@@ -38,7 +36,7 @@ export function Footer() {
   return (
     <footer className="bg-foreground text-background py-16 md:py-20 px-6 md:px-12 safe-bottom">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 mb-12 md:mb-16">
           <div>
             <Logo variant="light" className="text-2xl mb-4" />
             <p className="text-sm text-background/70 leading-relaxed max-w-xs">

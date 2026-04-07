@@ -87,22 +87,42 @@ export function TriggerRenderer() {
               />
             ))}
           </AnimatePresence>
-          {/* Spacer entre top bars e floating badges quando ambos presentes */}
-          {topBars.length > 0 && badges.length > 0 && (
-            <div className="md:hidden h-2" aria-hidden="true" />
+          {/* Floating badges (mobile in-flow, dentro do container topo) */}
+          {badges.length > 0 && (
+            <>
+              {topBars.length > 0 && (
+                <div className="md:hidden h-2" aria-hidden="true" />
+              )}
+              <div className="md:hidden">
+                <AnimatePresence>
+                  {badges.slice(0, 1).map((t) => (
+                    <TriggerFloatingBadge
+                      key={`mobile-${t.rule.slug}`}
+                      trigger={t}
+                      onDismiss={() => dismiss(t.rule.slug)}
+                      mode="mobile-inflow"
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+            </>
           )}
-          {/* Floating badges em mobile — só renderiza a versão mobile aqui */}
-          <AnimatePresence>
-            {badges.slice(0, 1).map((t) => (
-              <TriggerFloatingBadge
-                key={`mobile-${t.rule.slug}`}
-                trigger={t}
-                onDismiss={() => dismiss(t.rule.slug)}
-              />
-            ))}
-          </AnimatePresence>
         </div>
       )}
+
+      {/* Floating badges (desktop fixed bottom-right, fora do container topo) */}
+      <div className="hidden md:block">
+        <AnimatePresence>
+          {badges.slice(0, 1).map((t) => (
+            <TriggerFloatingBadge
+              key={`desktop-${t.rule.slug}`}
+              trigger={t}
+              onDismiss={() => dismiss(t.rule.slug)}
+              mode="desktop-fixed"
+            />
+          ))}
+        </AnimatePresence>
+      </div>
 
       {/* Modais (max 1) */}
       {modals.slice(0, 1).map((t) => (

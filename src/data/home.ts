@@ -19,10 +19,10 @@ export const homeTestimonials = [
     city: "Campinas, SP",
     date: "agosto de 2025",
     quote:
-      "Nem acredito que planejamos nosso casamento sem precisar falar com mil fornecedores. Cada detalhe foi cuidado pela equipe.",
+      "Nem acredito que planejamos nosso casamento sem precisar falar com mil profissionais. Cada detalhe foi cuidado pela equipe.",
   },
   {
-    coupleName: "Julia & Rafael",
+    coupleName: "Júlia & Rafael",
     initials: "JR",
     city: "Guarujá, SP",
     date: "janeiro de 2026",

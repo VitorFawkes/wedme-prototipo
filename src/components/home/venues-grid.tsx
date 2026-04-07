@@ -25,12 +25,15 @@ export function VenuesGrid() {
   const visible = expanded ? sorted : sorted.slice(0, 6);
 
   return (
-    <section className="bg-background py-20 md:py-28 px-4 md:px-12">
+    <section
+      id="venues"
+      className="bg-background py-20 md:py-28 px-4 md:px-12 scroll-mt-20"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 md:mb-16">
           <Overline className="mb-4">Locais parceiros</Overline>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-foreground tracking-editorial leading-tight">
-            13 espaços Welucci
+            {venues.length} espaços Welucci
             <br />
             para o grande dia
           </h2>
@@ -84,7 +87,7 @@ export function VenuesGrid() {
               onClick={() => setExpanded(true)}
               className="inline-flex items-center justify-center min-h-12 px-7 py-3.5 rounded-sm border border-primary text-primary text-sm font-medium tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
             >
-              Ver todos os 13 espaços →
+              Ver todos os {venues.length} espaços →
             </button>
           </div>
         )}

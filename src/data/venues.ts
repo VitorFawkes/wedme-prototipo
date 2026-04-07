@@ -494,7 +494,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 52,
     social_proof_line:
-      "Casais com perfil Íntimo & Emocional escolheram este profissional nos últimos 3 meses",
+      "Casais com perfil Íntimo & Emocional escolheram este espaço nos últimos 3 meses",
     packages: [
       {
         id: "essencial",

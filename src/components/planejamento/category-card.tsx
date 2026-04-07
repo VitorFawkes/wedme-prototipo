@@ -112,7 +112,7 @@ export function CategoryCard({
             onClick={handleUnskip}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary tracking-wide hover:underline"
           >
-            Reativar esta categoria
+            Voltar a esta categoria
           </button>
         </div>
       </div>

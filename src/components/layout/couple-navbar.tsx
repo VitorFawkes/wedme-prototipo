@@ -40,15 +40,17 @@ export function CoupleNavbar() {
           <Logo className="text-base md:text-xl" />
         </Link>
 
-        <div className="flex-1 min-w-0 text-center hidden md:block">
-          <span className="font-display text-base text-muted-foreground truncate">
+        {/* Nome do casal: centralizado em desktop, encostado à direita em mobile.
+            Renderizamos UMA vez só (sempre flex-1, alinhamento muda via classes).
+            Isso evita duplicação no DOM e no screen reader. */}
+        <div
+          className="flex-1 min-w-0 text-center md:text-center max-w-[40vw] md:max-w-none ml-auto md:ml-0"
+          aria-label={`Casamento de ${coupleName}`}
+        >
+          <span className="font-display text-sm md:text-base text-muted-foreground truncate inline-block max-w-full">
             {coupleName}
           </span>
         </div>
-
-        <span className="font-display text-sm text-muted-foreground truncate flex-1 text-right md:hidden max-w-[40vw]">
-          {coupleName}
-        </span>
 
         <button
           type="button"

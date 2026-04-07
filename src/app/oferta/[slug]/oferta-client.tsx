@@ -94,7 +94,7 @@ export function OfertaClient({ slug }: { slug: string }) {
             className="inline-flex items-center min-h-11 -ml-2 pl-1 pr-3 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5"
           >
             <ChevronLeft className="size-4 mr-1" />
-            {category?.name ?? "Voltar"}
+            Voltar para {category?.name ?? "categorias"}
           </Link>
 
           {/* Inline triggers (match-perfil etc) */}

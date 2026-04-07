@@ -91,7 +91,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Clock",
       title: "{data_extensa}",
-      body: "Este profissional tem esta data livre — mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
+      body: "{Este_tipo} tem esta data livre — mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
     },
   },
 
@@ -100,7 +100,7 @@ export const triggers: readonly TriggerRule[] = [
   // ============================================================
   {
     slug: "peer-live-oferta",
-    name: "Outros casais olhando este profissional agora",
+    name: "Outros casais observando esta op\u00e7\u00e3o agora",
     priority: 70,
     once: false,
     position: "floating_badge",
@@ -109,7 +109,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Eye",
       title: "{peer_count_live} casais olhando agora",
-      body: "Este perfil está com movimento nas últimas horas. Se fizer sentido pra vocês, vale reservar antes da próxima proposta.",
+      body: "{Este_tipo} está com movimento nas últimas horas. Se fizer sentido pra vocês, vale garantir antes da próxima proposta chegar.",
     },
   },
 
@@ -127,7 +127,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Target",
       title: "{match_percent}% de match com o perfil de vocês",
-      body: "Nossa curadoria cruza {profile_name} + {cidade} + estilo do portfólio deste profissional. Não é horóscopo — é análise real de compatibilidade.",
+      body: "Nossa curadoria cruza {profile_name} + {cidade} + o estilo do portfólio {deste_tipo}. Não é horóscopo — é análise real de compatibilidade.",
     },
   },
 

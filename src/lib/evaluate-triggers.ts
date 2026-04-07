@@ -13,6 +13,7 @@ import {
   getCategoriesOfPath,
   getProvidersByCategory,
   getTotalConfirmed,
+  getVendorOrVenueBySlug,
   sortVendorsForProfile,
 } from "@/lib/couple-helpers";
 import { formatBRL, formatDateExtended } from "@/lib/format";
@@ -186,6 +187,19 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
   const matchSeed = `${ctx.wedding_profile_slug}-${offerSlug}`;
   const socialSeed = `${ctx.wedding_profile_slug}-${ctx.city}-${currentCategory ?? ""}`;
 
+  // Detecta se a oferta atual é um espaço (categoria local) ou profissional.
+  // Usado pra resolver placeholders {Este_tipo} / {deste_tipo} dinamicamente,
+  // evitando que o copy chame um venue de "profissional" e vice-versa.
+  let isVenue = false;
+  if (offerSlug) {
+    const offerVendor = getVendorOrVenueBySlug(offerSlug);
+    isVenue = offerVendor?.category === "local";
+  }
+  const ESTE_TIPO = isVenue ? "Este espaço" : "Este profissional";
+  const este_tipo = isVenue ? "este espaço" : "este profissional";
+  const DESTE_TIPO = isVenue ? "Deste espaço" : "Deste profissional";
+  const deste_tipo = isVenue ? "deste espaço" : "deste profissional";
+
   const replacements: Record<string, string> = {
     "{nome_1}": ctx.partner_1_name ?? "",
     "{nome_2}": ctx.partner_2_name ?? "",
@@ -209,6 +223,10 @@ function interpolate(template: string, ctx: TriggerEvalContext): string {
       ? deterministicMatchPercent(matchSeed).toString()
       : "90",
     "{social_proof_count}": deterministicSocialProofCount(socialSeed).toString(),
+    "{Este_tipo}": ESTE_TIPO,
+    "{este_tipo}": este_tipo,
+    "{Deste_tipo}": DESTE_TIPO,
+    "{deste_tipo}": deste_tipo,
   };
 
   let result = template;

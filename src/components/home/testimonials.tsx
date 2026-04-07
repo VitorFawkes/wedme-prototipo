@@ -9,7 +9,10 @@ import { Overline } from "@/components/ornaments/overline";
  */
 export function Testimonials() {
   return (
-    <section className="bg-muted py-20 md:py-28 px-6 md:px-12">
+    <section
+      id="depoimentos"
+      className="bg-muted py-20 md:py-28 px-6 md:px-12 scroll-mt-20"
+    >
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12 md:mb-16">
           <Overline className="mb-4">Depoimentos</Overline>

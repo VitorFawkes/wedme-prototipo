@@ -63,14 +63,15 @@ export function SpecialistWidget() {
 
   return (
     <>
-      {/* FAB — z-40, posicionado acima do progress footer / bottom sheet
-          de preço (~80-96px). Floating badge agora está no topo em mobile,
-          então não há colisão. */}
+      {/* FAB — z-40, fixed bottom-right.
+          As páginas que usam progress footer / bottom sheet de pre\u00e7o
+          adicionam padding-bottom suficiente pra n\u00e3o sobrepor conte\u00fado
+          (pb-32 / pb-40). O FAB fica em bottom-4 mobile / bottom-6 desktop. */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.4 }}
-        className="fixed z-40 safe-bottom bottom-24 right-4 md:bottom-6 md:right-6"
+        className="fixed z-40 safe-bottom bottom-4 right-4 md:bottom-6 md:right-6"
       >
         <button
           type="button"
@@ -79,10 +80,16 @@ export function SpecialistWidget() {
           className="group inline-flex items-center gap-2 min-h-12 pl-4 pr-5 rounded-full bg-foreground text-background shadow-lg hover:bg-brand-wine transition-all duration-200 hover:pr-6"
         >
           <MessageCircle className="size-5" aria-hidden="true" />
-          <span className="text-sm font-medium tracking-wide hidden sm:inline">
+          <span
+            aria-hidden="true"
+            className="text-sm font-medium tracking-wide hidden sm:inline"
+          >
             Falar com especialista
           </span>
-          <span className="text-sm font-medium tracking-wide sm:hidden">
+          <span
+            aria-hidden="true"
+            className="text-sm font-medium tracking-wide sm:hidden"
+          >
             Especialista
           </span>
         </button>

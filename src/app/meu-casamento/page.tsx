@@ -92,7 +92,7 @@ export default function MeuCasamentoPage() {
       <CoupleNavbar />
       <TriggerRenderer />
 
-      <main className="min-h-dvh pt-couple pb-16 safe-px">
+      <main className="min-h-dvh pt-couple pb-24 md:pb-20 safe-px">
         {/* Hero compacto */}
         <section className="bg-muted px-4 md:px-12 py-8 md:py-12">
           <div className="max-w-5xl mx-auto">
@@ -229,7 +229,7 @@ export default function MeuCasamentoPage() {
                         </span>
                       )}
                       <span className="text-xs md:text-sm text-primary font-medium tracking-wide flex items-center">
-                        {selection ? "Ver" : "Escolher"}
+                        {selection ? "Ver escolha" : "Escolher"}
                         <ChevronRight className="size-4 ml-0.5" />
                       </span>
                     </div>

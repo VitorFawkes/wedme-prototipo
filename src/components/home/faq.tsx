@@ -15,7 +15,10 @@ import { homeFaq } from "@/data/home";
  */
 export function Faq() {
   return (
-    <section className="bg-background py-20 md:py-24 px-6 md:px-12">
+    <section
+      id="faq"
+      className="bg-background py-20 md:py-24 px-6 md:px-12 scroll-mt-20"
+    >
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10 md:mb-12">
           <Overline className="mb-4">Dúvidas frequentes</Overline>

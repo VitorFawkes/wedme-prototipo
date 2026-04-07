@@ -12,6 +12,7 @@ import { CelebrationScreen } from "@/components/checkout/celebration";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { useCouple } from "@/store/couple";
 import {
+  getCategoriesOfPath,
   getCoupleSlug,
   getTotalConfirmed,
   getVendorOrVenueBySlug,
@@ -42,6 +43,7 @@ export default function CheckoutPage() {
   const state = useCouple((s) => s.state);
   const selections = useCouple((s) => s.selections);
   const skipped_categories = useCouple((s) => s.skipped_categories);
+  const wedding_profile_slug = useCouple((s) => s.wedding_profile_slug);
   const setStatus = useCouple((s) => s.setStatus);
   const onboardingComplete = useCouple((s) => s.onboarding_complete);
 
@@ -109,7 +111,7 @@ export default function CheckoutPage() {
     <>
       <CoupleNavbar />
 
-      <main className="min-h-dvh pt-couple pb-16 safe-px">
+      <main className="min-h-dvh pt-couple pb-24 md:pb-20 safe-px">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10">
           <Link
             href="/meu-casamento"
@@ -217,12 +219,14 @@ export default function CheckoutPage() {
                 </p>
               )}
 
-              {/* Pendentes */}
+              {/* Pendentes — só conta categorias do path do perfil do casal,
+                  não as 9 totais. E ignora as que foram explicitamente puladas. */}
               {(() => {
-                const pending = categories.filter(
-                  (c) =>
-                    !selections.some((s) => s.category_slug === c.slug) &&
-                    !skipped_categories.includes(c.slug),
+                const path = getCategoriesOfPath(wedding_profile_slug);
+                const pending = path.filter(
+                  (slug) =>
+                    !selections.some((s) => s.category_slug === slug) &&
+                    !skipped_categories.includes(slug),
                 );
                 if (pending.length === 0) return null;
                 return (
@@ -271,10 +275,14 @@ export default function CheckoutPage() {
           <section className="space-y-4">
             <button
               type="button"
-              onClick={() => alert("Contrato digital — lorem ipsum (modal mock)")}
+              onClick={() =>
+                alert(
+                  "Termos da curadoria — em produção abre um modal com o contrato completo.",
+                )
+              }
               className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
             >
-              Ver contrato digital
+              Revisar termos da curadoria
             </button>
 
             <label className="flex items-start gap-3 cursor-pointer">
