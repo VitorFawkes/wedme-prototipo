@@ -37,9 +37,9 @@ const SCENARIOS = [
   },
   {
     id: "natureza-meio",
-    label: "Casal Natureza & Destination no meio",
+    label: "Casal Natureza & Ar Livre no meio",
     description: "Júlia & Rafael, Trancoso, 2 escolhas",
-    profile: "natureza-destination" as ProfileSlug,
+    profile: "natureza-ar-livre" as ProfileSlug,
     selections: ["welucci-fontana", "vila-floral-design"],
   },
   {

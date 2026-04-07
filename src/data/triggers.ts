@@ -34,7 +34,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Sparkles",
       title: "Bem-vindos, {nome_1} e {nome_2}",
-      body: "Montamos este caminho olhando para o sonho de vocês. Começamos por {primeira_categoria}, que é onde tudo costuma fazer mais diferença para casamentos {profile_name}. Podem começar pela ordem ou pela categoria que mais animar.",
+      body: "Montamos este caminho olhando para o sonho de vocês. Começamos por {primeira_categoria}, que costuma fazer mais diferença. Podem seguir a ordem ou ir pela categoria que mais animar.",
     },
   },
 
@@ -57,11 +57,11 @@ export const triggers: readonly TriggerRule[] = [
   },
 
   // ============================================================
-  // 3. PROVA SOCIAL NA CATEGORIA — peer influence
+  // 3. PROVA SOCIAL NA CATEGORIA — peer influence (leve)
   // ============================================================
   {
     slug: "prova-social-categoria",
-    name: "Prova social específica ao perfil na categoria",
+    name: "Casais com perfil parecido",
     priority: 78,
     once: false,
     position: "inline_card",
@@ -69,8 +69,8 @@ export const triggers: readonly TriggerRule[] = [
     conditions: [{ type: "on_route", pattern: "/planejamento/" }],
     content: {
       icon: "Users",
-      title: "Casais com perfil parecido",
-      body: "Nos últimos 3 meses, {social_proof_count} casais {profile_name} em {cidade} escolheram {vendor_destaque} nesta categoria. Vocês podem explorar tudo. Achamos justo saberem por onde os outros começam.",
+      title: "Outros casais começaram por aqui",
+      body: "Casais com um perfil parecido com o de vocês costumam escolher {vendor_destaque} nesta categoria. Fiquem à vontade pra explorar todas as opções.",
     },
   },
 
@@ -91,7 +91,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Clock",
       title: "{data_extensa}",
-      body: "{Este_tipo} tem esta data livre, mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
+      body: "{Este_tipo} tem esta data disponível. Como é uma data concorrida, vale conferir com calma.",
     },
   },
 
@@ -109,7 +109,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Eye",
       title: "{peer_count_live} casais olhando agora",
-      body: "{Este_tipo} está com movimento nas últimas horas. Se fizer sentido pra vocês, vale garantir antes da próxima proposta chegar.",
+      body: "{Este_tipo} está recebendo bastante interesse. Se gostarem, vale marcar uma conversa.",
     },
   },
 
@@ -127,7 +127,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Target",
       title: "{match_percent}% de match com o perfil de vocês",
-      body: "Nossa curadoria cruza {profile_name}, {cidade} e o estilo do portfólio {deste_tipo}. Não é horóscopo, é análise real de compatibilidade.",
+      body: "Cruzamos o que vocês contaram com o portfólio e estilo {deste_tipo}. Uma combinação que faz sentido pra vocês.",
     },
   },
 
@@ -168,7 +168,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "ShieldCheck",
       title: "Vocês travaram R$ {total_confirmado}",
-      body: "A reserva fica garantida por 48 horas. Depois disso, os preços podem mudar. Podemos finalizar?",
+      body: "Os valores estão garantidos por enquanto. Quando quiserem, podemos finalizar.",
       cta_text: "Ir ao checkout",
       cta_href: "/checkout",
     },

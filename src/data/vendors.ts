@@ -813,7 +813,7 @@ export const vendors: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 65,
     social_proof_line:
-      "Escolhida para casamentos Natureza & Destination",
+      "Escolhida para casamentos ao ar livre e na natureza",
     packages: [
       {
         id: "essencial",

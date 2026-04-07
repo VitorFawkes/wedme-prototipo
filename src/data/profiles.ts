@@ -96,8 +96,8 @@ export const profiles: readonly Profile[] = [
     example_venues: ["welucci-the-one", "welucci-village", "welucci-single"],
   },
   {
-    slug: "natureza-destination",
-    name: "Natureza & Destination",
+    slug: "natureza-ar-livre",
+    name: "Natureza & Ar Livre",
     description:
       "Ao ar livre, cercados de verde, pé na areia ou debaixo de uma árvore centenária. Um casamento que celebra a paisagem e a conexão de vocês com o lugar.",
     detection_keywords: [

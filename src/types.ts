@@ -13,7 +13,7 @@ export type ProfileSlug =
   | "classico-atemporal"
   | "intimo-emocional"
   | "minimalista-moderno"
-  | "natureza-destination"
+  | "natureza-ar-livre"
   | "grande-celebracao";
 
 export type Profile = {

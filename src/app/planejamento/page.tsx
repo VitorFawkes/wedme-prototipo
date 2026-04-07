@@ -75,7 +75,7 @@ export default function PlanejamentoPage() {
             Seu caminho personalizado
           </Overline>
           <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-medium text-foreground tracking-editorial leading-tight max-w-3xl mx-auto">
-            {profile.name}
+            Entendemos o sonho de vocês
           </h1>
           <p className="font-display italic text-base md:text-xl text-muted-foreground mt-4 md:mt-6 max-w-2xl mx-auto leading-relaxed">
             {profile.description}
@@ -118,7 +118,7 @@ export default function PlanejamentoPage() {
             </h2>
             <p className="text-sm md:text-base text-muted-foreground mt-3 max-w-xl mx-auto leading-relaxed">
               Na ordem ideal para o perfil de vocês. Podem começar por qualquer
-              uma — mas a gente sugere seguir a sequência.
+              uma, mas a gente sugere seguir a sequência.
             </p>
           </div>
 
@@ -152,7 +152,7 @@ export default function PlanejamentoPage() {
 
           {/* Helper text sobre pular */}
           <p className="text-center mt-10 md:mt-12 text-sm text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Não precisam fechar tudo pela plataforma — vocês podem{" "}
+            Não precisam fechar tudo pela plataforma. Vocês podem{" "}
             <strong className="text-foreground font-medium">pular categorias</strong>{" "}
             que já tem, ou que preferem resolver depois. O casamento segue firme.
           </p>

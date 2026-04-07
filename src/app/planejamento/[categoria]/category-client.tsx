@@ -72,12 +72,12 @@ export function CategoryClient({
               {sorted.length}{" "}
               {categorySlug === "local"
                 ? sorted.length === 1
-                  ? "espaço curado"
-                  : "espaços curados"
+                  ? "espaço selecionado"
+                  : "espaços selecionados"
                 : sorted.length === 1
-                  ? "profissional curado"
-                  : "profissionais curados"}{" "}
-              para o perfil de vocês{city && ` em ${city}`}.
+                  ? "profissional selecionado"
+                  : "profissionais selecionados"}{" "}
+              para vocês{city && ` em ${city}`}.
             </p>
           </div>
 

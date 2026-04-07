@@ -24,7 +24,7 @@ Perfis disponíveis:
    escolha feita com intenção. Arquitetura, luz e atmosfera criando algo
    único.
 
-4. natureza-destination — Ao ar livre, cercados de verde, pé na areia,
+4. natureza-ar-livre — Ao ar livre, cercados de verde, pé na areia,
    campo, vista. Casamentos que celebram a paisagem e a conexão do casal
    com o lugar.
 

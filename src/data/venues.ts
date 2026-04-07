@@ -38,7 +38,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 87,
     social_proof_line:
-      "Casais com perfil Grande Celebração escolheram este espaço nos últimos 3 meses",
+      "Ideal para celebrações com muitos convidados",
     packages: [
       {
         id: "essencial",
@@ -210,7 +210,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 71,
     social_proof_line:
-      "Preferência de casais com perfil Clássico Atemporal e Minimalista Moderno",
+      "Combina elegância clássica com design contemporâneo",
     packages: [
       {
         id: "essencial",
@@ -298,7 +298,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.7,
     total_reviews: 41,
     social_proof_line:
-      "Indicado para casais com perfil Minimalista Moderno",
+      "Para quem busca design clean e arquitetura marcante",
     packages: [
       {
         id: "essencial",
@@ -346,7 +346,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.8,
     total_reviews: 37,
     social_proof_line:
-      "Favorito de casais com perfil Íntimo & Emocional",
+      "Perfeito para casamentos acolhedores e cheios de significado",
     packages: [
       {
         id: "essencial",
@@ -394,7 +394,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 58,
     social_proof_line:
-      "Escolhido por casais com perfil Natureza & Destination",
+      "Escolhido por casais que sonham com natureza e ar livre",
     packages: [
       {
         id: "essencial",
@@ -442,7 +442,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 46,
     social_proof_line:
-      "Preferência absoluta de casais com perfil Clássico Atemporal",
+      "Para quem sonha com tradição e elegância",
     packages: [
       {
         id: "essencial",
@@ -494,7 +494,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 52,
     social_proof_line:
-      "Casais com perfil Íntimo & Emocional escolheram este espaço nos últimos 3 meses",
+      "Ideal para celebrações intimistas e emocionantes",
     packages: [
       {
         id: "essencial",
@@ -541,7 +541,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.8,
     total_reviews: 39,
     social_proof_line:
-      "Cenário cinematográfico preferido de casais Natureza & Destination",
+      "Cenário cinematográfico em meio à natureza",
     packages: [
       {
         id: "essencial",
@@ -588,7 +588,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.8,
     total_reviews: 44,
     social_proof_line:
-      "Indicado para casais com perfil Grande Celebração",
+      "Espaço amplo e versátil para festas inesquecíveis",
     packages: [
       {
         id: "essencial",
@@ -636,7 +636,7 @@ export const venues: readonly Vendor[] = [
     rating: 4.9,
     total_reviews: 48,
     social_proof_line:
-      "Destination preferido por casais Natureza & Destination",
+      "Perfeito para casamentos pé na areia",
     packages: [
       {
         id: "essencial",

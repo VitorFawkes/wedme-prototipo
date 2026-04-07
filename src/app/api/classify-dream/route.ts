@@ -14,7 +14,7 @@ const PROFILE_SLUGS: ProfileSlug[] = [
   "classico-atemporal",
   "intimo-emocional",
   "minimalista-moderno",
-  "natureza-destination",
+  "natureza-ar-livre",
   "grande-celebracao",
 ];
 
