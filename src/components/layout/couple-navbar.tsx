@@ -10,12 +10,12 @@ import { useCouple } from "@/store/couple";
  * Navbar fina das rotas do casal: /planejamento, /meu-casamento, /checkout,
  * /planejamento/[categoria], /oferta/[slug].
  *
- * Layout mobile (h-14): logo | nome do casal (truncado) | bot\u00e3o reset
- * Layout desktop (h-16): logo | nome do casal | "Reiniciar simula\u00e7\u00e3o"
+ * Layout mobile (h-14): logo | nome do casal (truncado) | botão reset
+ * Layout desktop (h-16): logo | nome do casal | "Reiniciar simulação"
  *
- * O bot\u00e3o de reset \u00e9 vis\u00edvel em todos os tamanhos:
- *  - Mobile: \u00edcone + label "Reiniciar" curto (cabe em 375px)
- *  - Desktop: \u00edcone + "Reiniciar simula\u00e7\u00e3o" completo
+ * O botão de reset é visível em todos os tamanhos:
+ *  - Mobile: ícone + label "Reiniciar" curto (cabe em 375px)
+ *  - Desktop: ícone + "Reiniciar simulação" completo
  */
 export function CoupleNavbar() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export function CoupleNavbar() {
   function handleReset() {
     if (
       confirm(
-        "Reiniciar a simula\u00e7\u00e3o? Todo o progresso ser\u00e1 apagado e voc\u00ea volta para o in\u00edcio.",
+        "Reiniciar a simulação? Todo o progresso será apagado e você volta para o início.",
       )
     ) {
       reset();
@@ -62,11 +62,11 @@ export function CoupleNavbar() {
           type="button"
           onClick={handleReset}
           className="inline-flex items-center justify-center gap-1.5 md:gap-2 min-h-11 px-3 md:px-4 rounded-sm border border-border text-foreground text-xs md:text-sm font-medium tracking-wide hover:bg-foreground hover:text-background hover:border-foreground transition-colors duration-200 shrink-0"
-          aria-label="Reiniciar simula\u00e7\u00e3o"
+          aria-label="Reiniciar simulação"
         >
           <RotateCcw className="size-3.5 md:size-4" aria-hidden="true" />
           <span className="md:hidden">Reiniciar</span>
-          <span className="hidden md:inline">Reiniciar simula\u00e7\u00e3o</span>
+          <span className="hidden md:inline">Reiniciar simulação</span>
         </button>
       </nav>
     </header>
