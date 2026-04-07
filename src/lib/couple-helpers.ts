@@ -143,29 +143,164 @@ function hashString(str: string): number {
   return Math.abs(hash);
 }
 
+/**
+ * Calcula o score de "afinidade" de um vendor com o casal.
+ *
+ * Quanto maior o score, mais alto ele aparece na lista. Combina 3 sinais:
+ *
+ * 1. **example_venues do perfil** (peso 100): se o perfil do casal lista
+ *    explicitamente esse vendor como exemplo, ele vai pro topo.
+ * 2. **dream keywords match** (peso 30 por keyword): se o texto do sonho
+ *    do casal contém palavras que aparecem na bio/tagline/highlights do
+ *    vendor, soma. Ex: dream menciona "praia" → vendors cuja bio menciona
+ *    "praia"/"areia"/"mar" sobem.
+ * 3. **city/region match** (peso 50): se o casal disse que quer casar
+ *    em "Ilhabela" ou "praia em SP", vendors cuja city é Ilhabela ou
+ *    cuja highlights menciona praia/litoral sobem.
+ * 4. **tiebreaker determinístico** (peso 0-10): hash estável pra que a
+ *    ordem nunca mude entre renders.
+ */
+function scoreVendor(
+  vendor: Vendor,
+  profile: (typeof profiles)[number] | undefined,
+  dreamText: string | null,
+  city: string | null,
+  seed: string,
+): number {
+  let score = 0;
+
+  // 1. Example venues do perfil
+  if (profile?.example_venues.includes(vendor.slug)) {
+    score += 100;
+  }
+
+  // 2. Dream keywords match
+  if (dreamText && dreamText.length > 0) {
+    const dreamLower = dreamText.toLowerCase();
+    const haystack = [
+      vendor.tagline,
+      vendor.bio,
+      ...(vendor.highlights ?? []),
+      vendor.name,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    // Lista de palavras-chave que importam pra matching de estilo
+    const KEYWORDS = [
+      "praia",
+      "areia",
+      "mar",
+      "litoral",
+      "natureza",
+      "jardim",
+      "verde",
+      "campo",
+      "fazenda",
+      "rústico",
+      "rustico",
+      "sítio",
+      "sitio",
+      "vintage",
+      "moderno",
+      "minimalista",
+      "clean",
+      "contemporâneo",
+      "contemporaneo",
+      "clássico",
+      "classico",
+      "tradição",
+      "tradicao",
+      "tradicional",
+      "elegante",
+      "íntimo",
+      "intimo",
+      "intimista",
+      "pequeno",
+      "grande",
+      "festa",
+      "dança",
+      "danca",
+      "balada",
+      "pôr do sol",
+      "por do sol",
+      "entardecer",
+      "dia",
+      "noite",
+      "vista",
+      "varanda",
+      "terraço",
+      "terraco",
+      "cidade",
+      "urbano",
+      "industrial",
+    ];
+
+    for (const kw of KEYWORDS) {
+      if (dreamLower.includes(kw) && haystack.includes(kw)) {
+        score += 30;
+      }
+    }
+  }
+
+  // 3. City/region match
+  if (city) {
+    const cityLower = city.toLowerCase();
+    const vendorCityLower = vendor.city.toLowerCase();
+    const highlightsLower = (vendor.highlights ?? [])
+      .join(" ")
+      .toLowerCase();
+    const taglineLower = vendor.tagline.toLowerCase();
+
+    // Match exato de cidade
+    if (vendorCityLower.includes(cityLower) || cityLower.includes(vendorCityLower)) {
+      score += 50;
+    }
+
+    // "Praia" / "litoral" no city do casal → boost para vendors com sinais de praia
+    if (
+      /praia|litoral|mar|areia/.test(cityLower) &&
+      /praia|litoral|mar|areia|deck|pernambuco|guarujá|guaruja|ilhabela|ubatuba|ocean/.test(
+        vendorCityLower + " " + highlightsLower + " " + taglineLower,
+      )
+    ) {
+      score += 50;
+    }
+
+    // "Campo" / "interior" / "sítio" → boost para vendors interior
+    if (
+      /campo|interior|sítio|sitio|fazenda/.test(cityLower) &&
+      /campo|interior|colonial|fazenda|sítio|sitio|jardim|verde|área verde/.test(
+        vendorCityLower + " " + highlightsLower + " " + taglineLower,
+      )
+    ) {
+      score += 50;
+    }
+  }
+
+  // 4. Tiebreaker determinístico (sempre adiciona algum valor entre 0-10)
+  score += (hashString(vendor.slug + seed) % 11);
+
+  return score;
+}
+
 export function sortVendorsForProfile(
   vendorList: readonly Vendor[],
   profileSlug: ProfileSlug | null,
   categorySlug: CategorySlug,
+  dreamText: string | null = null,
+  city: string | null = null,
 ): readonly Vendor[] {
   if (!profileSlug) return vendorList;
 
   const profile = profiles.find((p) => p.slug === profileSlug);
   if (!profile) return vendorList;
 
-  // Primeiro: priorizar example_venues do perfil (especialmente para `local`)
-  const exampleSlugs = profile.example_venues;
+  const seed = `${profileSlug}-${categorySlug}`;
 
   return [...vendorList].sort((a, b) => {
-    const aIsExample = exampleSlugs.includes(a.slug);
-    const bIsExample = exampleSlugs.includes(b.slug);
-    if (aIsExample && !bIsExample) return -1;
-    if (!aIsExample && bIsExample) return 1;
-
-    // Tiebreaker determinístico via hash do slug + perfil + categoria
-    const seed = `${profileSlug}-${categorySlug}`;
-    const aScore = hashString(a.slug + seed);
-    const bScore = hashString(b.slug + seed);
-    return aScore - bScore;
+    const scoreA = scoreVendor(a, profile, dreamText, city, seed);
+    const scoreB = scoreVendor(b, profile, dreamText, city, seed);
+    return scoreB - scoreA; // descendente: maior score primeiro
   });
 }

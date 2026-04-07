@@ -33,9 +33,9 @@ export function CoupleNavbar() {
     <header className="fixed top-0 left-0 right-0 z-40 safe-top safe-px bg-background/95 backdrop-blur-sm border-b border-border">
       <nav className="flex items-center justify-between h-12 md:h-14 px-4 md:px-8 max-w-7xl mx-auto gap-3">
         <Link
-          href="/meu-casamento"
+          href="/"
           className="inline-flex items-center min-h-11 -ml-1 px-1 shrink-0"
-          aria-label="Meu casamento"
+          aria-label="we.wedme — voltar para a home"
         >
           <Logo className="text-base md:text-xl" />
         </Link>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import { VendorCard } from "@/components/planejamento/vendor-card";
 import { ProgressFooter } from "@/components/planejamento/progress-footer";
@@ -30,6 +30,7 @@ export function CategoryClient({
 }) {
   const profileSlug = useCouple((s) => s.wedding_profile_slug);
   const city = useCouple((s) => s.city);
+  const dreamText = useCouple((s) => s.dream_text);
   const selections = useCouple((s) => s.selections);
 
   const [hydrated, setHydrated] = useState(false);
@@ -39,7 +40,13 @@ export function CategoryClient({
 
   const category = categories.find((c) => c.slug === categorySlug);
   const providers = getProvidersByCategory(categorySlug);
-  const sorted = sortVendorsForProfile(providers, profileSlug, categorySlug);
+  const sorted = sortVendorsForProfile(
+    providers,
+    profileSlug,
+    categorySlug,
+    dreamText,
+    city,
+  );
   const existingSelection = selections.find(
     (s) => s.category_slug === categorySlug,
   );
@@ -53,14 +60,8 @@ export function CategoryClient({
 
       <main className="min-h-dvh pt-couple pb-32 safe-px">
         <div className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-12">
-          {/* Voltar */}
-          <Link
-            href="/planejamento"
-            className="inline-flex items-center min-h-11 -ml-2 pl-1 pr-3 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-          >
-            <ChevronLeft className="size-4 mr-1" />
-            Voltar ao meu plano
-          </Link>
+          {/* Voltar para o plano (categoria pai) */}
+          <BackLink href="/planejamento" label="Voltar ao meu plano" className="mb-6" />
 
           {/* Header */}
           <div className="mb-8 md:mb-10">

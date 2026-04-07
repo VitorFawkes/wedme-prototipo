@@ -131,6 +131,8 @@ function tryParseGuestCount(text: string): number | undefined {
 
 function tryParseCity(text: string): { city?: string; state?: string } {
   const lower = text.toLowerCase();
+
+  // 1. Cidade conhecida tem prioridade
   for (const [city, state] of Object.entries(KNOWN_CITIES)) {
     if (lower.includes(city)) {
       return {
@@ -142,6 +144,31 @@ function tryParseCity(text: string): { city?: string; state?: string } {
       };
     }
   }
+
+  // 2. Padrões de "região" sem cidade exata. NÃO ficamos perguntando qual
+  //    cidade depois — gravamos a região como city e seguimos.
+  if (/litoral.*paulista|praia.*sp|praia em sao paulo|praia em s\u00e3o paulo/.test(lower)) {
+    return { city: "Litoral de SP", state: "SP" };
+  }
+  if (/litoral.*carioca|praia.*rj|praia em rio/.test(lower)) {
+    return { city: "Litoral do RJ", state: "RJ" };
+  }
+  if (/litoral.*bahia|praia.*ba|praia.*nordeste/.test(lower)) {
+    return { city: "Litoral da Bahia", state: "BA" };
+  }
+  if (/^\s*(na |em uma |numa )?praia\s*\.?\s*$|qualquer praia/.test(lower)) {
+    return { city: "Praia" };
+  }
+  if (/interior.*sp|interior paulista/.test(lower)) {
+    return { city: "Interior de SP", state: "SP" };
+  }
+  if (/^\s*(no |em |num )?interior\s*\.?\s*$/.test(lower)) {
+    return { city: "Interior" };
+  }
+  if (/^\s*(no |em uma |numa )?(campo|s\u00edtio|sitio|fazenda)/.test(lower)) {
+    return { city: "Campo" };
+  }
+
   return {};
 }
 
@@ -154,18 +181,18 @@ function capitalize(str: string): string {
 // ============================================================
 
 const REPLIES = {
-  greeting: "Que bom que vocês toparam! Vamos começar pelo básico.",
+  greeting: "Que bom que vocês toparam. Vamos começar pelo básico.",
   names_extracted: (p1: string, p2: string) =>
-    `${p1} e ${p2} — que combinação linda. Anotado.`,
+    `${p1} e ${p2}, que combinação linda. Anotado.`,
   ask_names: "Como vocês se chamam?",
   ask_date: "E vocês já têm uma data ou pelo menos uma ideia de mês?",
   date_extracted: "Anotado. Falta pouco.",
-  ask_city: "Em qual cidade vai ser o grande dia?",
-  city_extracted: (city: string) => `${city} — vou guardar isso aqui.`,
+  ask_city: "Em qual cidade ou região vai ser o grande dia?",
+  city_extracted: (city: string) => `${city}, anotado.`,
   ask_budget: "E o orçamento? Pode ser uma estimativa, qualquer noção serve.",
   budget_extracted: "Anotado. Dá pra trabalhar muito bem com esse valor.",
   ask_guests:
-    "E quantos convidados? Pode ser redondo — uns 80, entre 100 e 150, ou 'mini wedding'.",
+    "E quantos convidados? Pode ser redondo: uns 80, entre 100 e 150, ou 'mini wedding'.",
   guests_extracted: "Anotado. Isso já me ajuda a montar o caminho certo.",
   ask_email: "Por último: qual o email de vocês pra eu salvar tudo?",
   email_extracted: "Pronto. Tudo salvo.",

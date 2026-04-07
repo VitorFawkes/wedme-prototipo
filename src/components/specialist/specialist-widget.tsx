@@ -63,15 +63,18 @@ export function SpecialistWidget() {
 
   return (
     <>
-      {/* FAB — z-40, fixed bottom-right.
-          As páginas que usam progress footer / bottom sheet de pre\u00e7o
-          adicionam padding-bottom suficiente pra n\u00e3o sobrepor conte\u00fado
-          (pb-32 / pb-40). O FAB fica em bottom-4 mobile / bottom-6 desktop. */}
+      {/* FAB - posicionamento defensivo:
+          - Mobile: bottom-LEFT pra n\u00e3o cobrir nenhum CTA/bot\u00e3o do conte\u00fado.
+            Os CTAs principais (Ver pacotes, Quero este, etc) sempre ficam
+            no canto direito ou full-width, ent\u00e3o left fica livre.
+            Usamos bottom-24 pra ficar acima do bottom sheet sticky de
+            pre\u00e7o (que tem ~80px) ou progress footer (~80px).
+          - Desktop: bottom-right cl\u00e1ssico (h\u00e1 espa\u00e7o de sobra). */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.2, duration: 0.4 }}
-        className="fixed z-40 safe-bottom bottom-4 right-4 md:bottom-6 md:right-6"
+        className="fixed z-40 safe-bottom bottom-24 left-4 md:bottom-6 md:right-6 md:left-auto"
       >
         <button
           type="button"

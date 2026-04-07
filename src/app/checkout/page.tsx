@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import { Overline } from "@/components/ornaments/overline";
 import { Ornament } from "@/components/ornaments/ornament";
@@ -113,13 +114,11 @@ export default function CheckoutPage() {
 
       <main className="min-h-dvh pt-couple pb-24 md:pb-20 safe-px">
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10">
-          <Link
+          <BackLink
             href="/meu-casamento"
-            className="inline-flex items-center min-h-11 -ml-2 pl-1 pr-3 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-          >
-            <ChevronLeft className="size-4 mr-1" />
-            Meu casamento
-          </Link>
+            label="Voltar ao meu casamento"
+            className="mb-6"
+          />
 
           {/* Mood board hero */}
           <section className="relative aspect-square sm:aspect-video md:aspect-[16/9] rounded-md overflow-hidden mb-10 md:mb-12 isolate">

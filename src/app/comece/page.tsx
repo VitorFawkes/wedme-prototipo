@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChatBubble } from "@/components/onboarding/chat-bubble";
 import { TypingIndicator } from "@/components/onboarding/typing-indicator";
@@ -25,7 +26,7 @@ import type {
  * Desktop: input inline abaixo das mensagens
  */
 
-const GREETING = `Oi. Eu sou a assistente da we.wedme. Estou aqui para entender como vocês imaginam o casamento e montar um caminho feito sob medida. Topam começar com algumas perguntas rápidas?`;
+const GREETING = `Oi! Eu sou a assistente da we.wedme. Vou fazer algumas perguntas rápidas pra entender o sonho de vocês (data, lugar, estilo, número de convidados) e, com isso, montar uma curadoria personalizada de espaços e profissionais. Leva uns 3 minutos. Topam?`;
 
 type LocalTurn = {
   id: string;
@@ -305,7 +306,7 @@ export default function ComecePage() {
       id: `a-intro-${Date.now()}`,
       role: "assistant",
       content:
-        "Que bom. Pra começar, me contem os primeiros nomes de vocês dois.",
+        "Que bom. Pra começar bem, como vocês se chamam? (Só o primeiro nome de cada um já basta.)",
     };
     setTurns((prev) => [...prev, firstQuestion]);
     appendChatTurn({
@@ -333,7 +334,13 @@ export default function ComecePage() {
       {/* Header com logo + barra de progresso */}
       <header className="fixed top-0 left-0 right-0 z-30 safe-top bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-2xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
-          <Logo className="text-base md:text-lg" />
+          <Link
+            href="/"
+            aria-label="we.wedme — voltar para a home"
+            className="inline-flex items-center min-h-11 -ml-1 px-1"
+          >
+            <Logo className="text-base md:text-lg" />
+          </Link>
           <div className="flex-1 max-w-xs">
             <div className="h-1 bg-muted rounded-full overflow-hidden">
               <div

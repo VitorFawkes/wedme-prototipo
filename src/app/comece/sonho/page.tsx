@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mic } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
@@ -169,7 +170,13 @@ export default function SonhoPage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-30 safe-top bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-2xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
-          <Logo className="text-base md:text-lg" />
+          <Link
+            href="/"
+            aria-label="we.wedme — voltar para a home"
+            className="inline-flex items-center min-h-11 -ml-1 px-1"
+          >
+            <Logo className="text-base md:text-lg" />
+          </Link>
           <div className="flex-1 max-w-xs">
             <div className="h-1 bg-muted rounded-full overflow-hidden">
               <div

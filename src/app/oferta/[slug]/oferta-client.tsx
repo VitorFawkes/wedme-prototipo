@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, Star, Check, X as XIcon } from "lucide-react";
+import { Star, Check, X as XIcon } from "lucide-react";
+import { BackLink } from "@/components/layout/back-link";
 import { CoupleNavbar } from "@/components/layout/couple-navbar";
 import {
   TriggerRenderer,
@@ -88,14 +89,12 @@ export function OfertaClient({ slug }: { slug: string }) {
 
       <main className="min-h-dvh pt-couple pb-32 md:pb-16 safe-px">
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-10">
-          {/* Breadcrumb */}
-          <Link
+          {/* Voltar para a listagem da categoria */}
+          <BackLink
             href={`/planejamento/${vendor.category}`}
-            className="inline-flex items-center min-h-11 -ml-2 pl-1 pr-3 text-sm text-muted-foreground hover:text-foreground transition-colors mb-5"
-          >
-            <ChevronLeft className="size-4 mr-1" />
-            Voltar para {category?.name ?? "categorias"}
-          </Link>
+            label={`Voltar para ${category?.name ?? "categorias"}`}
+            className="mb-5"
+          />
 
           {/* Inline triggers (match-perfil etc) */}
           {hydrated && inlineTriggers.length > 0 && (
