@@ -35,7 +35,18 @@ import type {
  * Desktop: input inline abaixo das mensagens
  */
 
-const GREETING = `Oi! Eu sou a assistente da we.wedme. Vou fazer algumas perguntas rápidas pra entender o sonho de vocês e montar uma curadoria personalizada de espaços e profissionais. Leva uns 3 minutos. Topam?`;
+const GREETING = `Oi! Eu sou a assistente da we.wedme. É bem rápido, são só algumas perguntinhas pra entender o sonho de vocês e montar uma curadoria personalizada de espaços e profissionais.`;
+
+const AUDIO_QUESTIONS_LIST = `Pra facilitar, aqui vão as perguntas. Podem responder tudo de uma vez no áudio:
+
+1. Qual o melhor WhatsApp de vocês?
+2. Como vocês se chamam?
+3. Já têm uma data ou ideia de mês pro casamento?
+4. Em qual cidade ou região?
+5. Qual o orçamento estimado?
+6. Quantos convidados, mais ou menos?
+
+Quando terminarem, é só parar a gravação.`;
 
 type LocalTurn = {
   id: string;
@@ -367,22 +378,13 @@ export default function ComecePage() {
     }
   }
 
-  /**
-   * Botão "Topamos" — NÃO envia "Topamos" como mensagem do casal à IA.
-   * Apenas transiciona para o estado "iniciado" e injeta a primeira pergunta
-   * hardcoded diretamente no chat. Isso evita que o modelo interprete o
-   * label do botão como resposta ("Amei esse topamos...").
-   *
-   * A primeira pergunta é sempre a mesma (nomes), então não vale queimar
-   * uma chamada de API só pra receber um texto que já sabemos.
-   */
-  function handleStart() {
+  function handleStartText() {
     setHasStarted(true);
     const firstQuestion: LocalTurn = {
       id: `a-intro-${Date.now()}`,
       role: "assistant",
       content:
-        "Que bom. Pra começar, qual o melhor WhatsApp pra gente se comunicar com vocês?",
+        "Que bom! Pra começar, qual o melhor WhatsApp pra gente se comunicar com vocês?",
     };
     setTurns((prev) => [...prev, firstQuestion]);
     appendChatTurn({
@@ -390,6 +392,23 @@ export default function ComecePage() {
       content: firstQuestion.content,
       timestamp: new Date().toISOString(),
     });
+  }
+
+  function handleStartAudio() {
+    setHasStarted(true);
+    const questionsTurn: LocalTurn = {
+      id: `a-questions-${Date.now()}`,
+      role: "assistant",
+      content: AUDIO_QUESTIONS_LIST,
+    };
+    setTurns((prev) => [...prev, questionsTurn]);
+    appendChatTurn({
+      role: "assistant",
+      content: questionsTurn.content,
+      timestamp: new Date().toISOString(),
+    });
+    // Abre o gravador de áudio automaticamente após um breve delay
+    setTimeout(() => setAudioOpen(true), 800);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -447,13 +466,21 @@ export default function ComecePage() {
           <ChatBubble role="assistant">{GREETING}</ChatBubble>
 
           {!hasStarted && (
-            <div className="flex justify-start">
+            <div className="flex flex-col gap-2 items-start">
               <button
                 type="button"
-                onClick={handleStart}
+                onClick={handleStartText}
                 className="inline-flex items-center justify-center min-h-12 px-7 py-3 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
               >
-                Topamos
+                Responder por texto
+              </button>
+              <button
+                type="button"
+                onClick={handleStartAudio}
+                className="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-3 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
+              >
+                <Mic className="size-4" />
+                Ver as perguntas e gravar um áudio
               </button>
             </div>
           )}
@@ -531,12 +558,12 @@ export default function ComecePage() {
                 }
               }}
               rows={1}
-              placeholder="Respondam como preferirem..."
+              placeholder="Respondam aqui..."
               enterKeyHint="send"
               autoComplete="off"
               disabled={isLoading}
-              className="flex-1 resize-none rounded-sm border border-border bg-background px-4 py-3 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 max-h-32 leading-relaxed"
-              style={{ fontSize: "16px" }}
+              className="flex-1 resize-none rounded-sm border border-border bg-background px-3 py-2.5 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 max-h-32 leading-normal overflow-hidden"
+              style={{ fontSize: "16px", height: "44px" }}
             />
             <button
               type="button"
