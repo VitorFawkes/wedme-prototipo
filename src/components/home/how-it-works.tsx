@@ -21,7 +21,7 @@ const STEPS = [
   {
     Icon: Heart,
     title: "Vocês decidem, a gente resolve",
-    body: "Escolham o que mais combina com vocês. Contratos, comunicação com fornecedores, logística: a Welucci cuida de tudo.",
+    body: "Escolham o que mais combina com vocês. Contratos, comunicação com fornecedores, logística: nós cuidamos de tudo.",
   },
 ] as const;
 
