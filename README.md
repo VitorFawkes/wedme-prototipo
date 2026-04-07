@@ -2,6 +2,8 @@
 
 Plataforma brasileira de planejamento de casamentos com curadoria centralizada. Este é um **protótipo navegável** (não um MVP) — front-end puro com dados mockados, projetado para demonstrar a lógica de inteligência da plataforma.
 
+> **Nota:** este repositório é a versão de demonstração / validação. O produto real (com Supabase, autenticação, áreas de admin/vendor/casal) é desenvolvido em [VitorFawkes/we.wedme](https://github.com/VitorFawkes/we.wedme) (privado). Os dois codebases são intencionalmente separados.
+
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + **Bun**
