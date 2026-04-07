@@ -1,0 +1,180 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ChevronLeft } from "lucide-react";
+import { CoupleNavbar } from "@/components/layout/couple-navbar";
+import { VendorCard } from "@/components/planejamento/vendor-card";
+import { ProgressFooter } from "@/components/planejamento/progress-footer";
+import { TriggerInlineCard } from "@/components/triggers/trigger-inline-card";
+import {
+  TriggerRenderer,
+  useInlineTriggers,
+} from "@/components/triggers/trigger-renderer";
+import { useCouple } from "@/store/couple";
+import {
+  getProvidersByCategory,
+  sortVendorsForProfile,
+} from "@/lib/couple-helpers";
+import { categories } from "@/data/categories";
+import { formatBRL } from "@/lib/format";
+import type { CategorySlug } from "@/types";
+
+export function CategoryClient({
+  categorySlug,
+}: {
+  categorySlug: CategorySlug;
+}) {
+  const profileSlug = useCouple((s) => s.wedding_profile_slug);
+  const city = useCouple((s) => s.city);
+  const selections = useCouple((s) => s.selections);
+
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  const { triggers: inlineTriggers, dismiss } = useInlineTriggers();
+
+  const category = categories.find((c) => c.slug === categorySlug);
+  const providers = getProvidersByCategory(categorySlug);
+  const sorted = sortVendorsForProfile(providers, profileSlug, categorySlug);
+  const existingSelection = selections.find(
+    (s) => s.category_slug === categorySlug,
+  );
+
+  if (!category) return null;
+
+  return (
+    <>
+      <CoupleNavbar />
+      <TriggerRenderer />
+
+      <main className="min-h-dvh pt-12 md:pt-14 pb-32 safe-px">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-12">
+          {/* Voltar */}
+          <Link
+            href="/planejamento"
+            className="inline-flex items-center min-h-11 -ml-2 pl-1 pr-3 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+          >
+            <ChevronLeft className="size-4 mr-1" />
+            Voltar ao meu plano
+          </Link>
+
+          {/* Header */}
+          <div className="mb-8 md:mb-10">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-medium text-foreground tracking-editorial leading-tight">
+              {category.name}
+            </h1>
+            <p className="mt-3 md:mt-4 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
+              {sorted.length}{" "}
+              {sorted.length === 1
+                ? "profissional curado"
+                : "profissionais curados"}{" "}
+              para o perfil de vocês{city && ` em ${city}`}.
+            </p>
+          </div>
+
+          {/* Banner se já tem seleção */}
+          {hydrated && existingSelection && (
+            <ExistingSelectionBanner
+              selection={existingSelection}
+              categorySlug={categorySlug}
+            />
+          )}
+
+          {/* Inline triggers (prova social específica) */}
+          {hydrated && inlineTriggers.length > 0 && (
+            <div className="mb-8 md:mb-10 space-y-4">
+              {inlineTriggers.map((t) => (
+                <TriggerInlineCard
+                  key={t.rule.slug}
+                  trigger={t}
+                  onDismiss={() => dismiss(t.rule.slug)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Grid de vendors */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+            {sorted.map((vendor) => (
+              <VendorCard key={vendor.slug} vendor={vendor} />
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <ProgressFooter />
+    </>
+  );
+}
+
+function ExistingSelectionBanner({
+  selection,
+  categorySlug,
+}: {
+  selection: { vendor_slug: string; quoted_price: number; package_id: string };
+  categorySlug: CategorySlug;
+}) {
+  const removeSelection = useCouple((s) => s.removeSelection);
+  // Lookup do vendor (precisa ser feito no client)
+  const [vendor, setVendor] = useState<{
+    name: string;
+    cover: string;
+    slug: string;
+    packages: { id: string; name: string }[];
+  } | null>(null);
+
+  useEffect(() => {
+    import("@/lib/couple-helpers").then(({ getVendorOrVenueBySlug }) => {
+      const v = getVendorOrVenueBySlug(selection.vendor_slug);
+      if (v) setVendor(v);
+    });
+  }, [selection.vendor_slug]);
+
+  if (!vendor) return null;
+  const pkg = vendor.packages.find((p) => p.id === selection.package_id);
+
+  return (
+    <div className="mb-6 md:mb-8 bg-primary/5 border border-primary/30 rounded-md p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="relative size-16 md:size-20 rounded-sm overflow-hidden bg-muted shrink-0">
+        <Image
+          src={vendor.cover}
+          alt={vendor.name}
+          fill
+          sizes="80px"
+          className="object-cover"
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs uppercase tracking-widest text-primary font-medium mb-1">
+          Você já escolheu
+        </p>
+        <p className="font-display text-lg md:text-xl text-foreground leading-tight">
+          {vendor.name}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {pkg?.name ?? "Pacote escolhido"} ·{" "}
+          <span className="text-foreground font-medium">
+            {formatBRL(selection.quoted_price)}
+          </span>
+        </p>
+      </div>
+      <div className="flex flex-row gap-2 w-full sm:w-auto">
+        <Link
+          href={`/oferta/${vendor.slug}`}
+          className="inline-flex items-center justify-center min-h-11 px-4 rounded-sm border border-primary text-primary text-sm font-medium tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors flex-1 sm:flex-initial"
+        >
+          Ver detalhes
+        </Link>
+        <button
+          type="button"
+          onClick={() => removeSelection(categorySlug)}
+          className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Trocar
+        </button>
+      </div>
+    </div>
+  );
+}
