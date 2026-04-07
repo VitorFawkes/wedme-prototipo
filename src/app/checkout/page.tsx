@@ -234,7 +234,7 @@ export default function CheckoutPage() {
                       {pending.length}{" "}
                       {pending.length === 1 ? "categoria" : "categorias"}
                     </strong>{" "}
-                    {pending.length === 1 ? "ficou" : "ficaram"} para depois — sem
+                    {pending.length === 1 ? "ficou" : "ficaram"} para depois. Sem
                     problema, vocês podem adicionar quando quiserem.
                   </p>
                 );
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
               <p className="mt-2 text-sm md:text-base text-muted-foreground leading-relaxed">
                 Cada profissional passou pela nossa curadoria. Se qualquer
                 imprevisto impedir a entrega no seu dia, substituímos por um
-                equivalente verificado — ou devolvemos 100% + R$500 de crédito.
+                equivalente verificado. Caso contrário, devolvemos 100% + R$500 de crédito.
               </p>
             </div>
           </section>
@@ -276,7 +276,7 @@ export default function CheckoutPage() {
               type="button"
               onClick={() =>
                 alert(
-                  "Termos da curadoria — em produção abre um modal com o contrato completo.",
+                  "Termos da curadoria (em produção abre um modal com o contrato completo).",
                 )
               }
               className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
@@ -309,7 +309,7 @@ export default function CheckoutPage() {
             </button>
 
             <p className="text-xs text-muted-foreground text-center tracking-wide">
-              Esta é uma simulação — nenhum pagamento é processado.
+              Esta é uma simulação. Nenhum pagamento é processado.
             </p>
           </section>
         </div>

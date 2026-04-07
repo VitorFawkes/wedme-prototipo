@@ -152,7 +152,7 @@ export function CasamentoClient({ slug }: { slug: string }) {
       {/* ====================================================
           3. NOSSA HISTÓRIA (expandida)
       ==================================================== */}
-      {(how_they_met || dream_text) && (
+      {how_they_met && (
         <section className="py-20 md:py-32 px-6 md:px-12 bg-background">
           <div className="max-w-3xl mx-auto text-center">
             <Divider />
@@ -160,26 +160,9 @@ export function CasamentoClient({ slug }: { slug: string }) {
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-normal text-foreground tracking-editorial leading-tight mb-10 md:mb-14">
               Como tudo começou
             </h2>
-
-            {how_they_met && (
-              <p className="text-base md:text-lg text-foreground leading-relaxed max-w-2xl mx-auto mb-10 md:mb-14">
-                {how_they_met}
-              </p>
-            )}
-
-            {dream_text && (
-              <>
-                {how_they_met && (
-                  <div className="flex justify-center mb-10 md:mb-14">
-                    <Ornament size="sm" />
-                  </div>
-                )}
-                <Overline className="mb-4">O que sonhamos</Overline>
-                <blockquote className="font-display italic text-xl sm:text-2xl md:text-3xl text-foreground leading-relaxed max-w-2xl mx-auto">
-                  &ldquo;{dream_text}&rdquo;
-                </blockquote>
-              </>
-            )}
+            <p className="text-base md:text-lg text-foreground leading-relaxed max-w-2xl mx-auto">
+              {how_they_met}
+            </p>
           </div>
         </section>
       )}
@@ -358,7 +341,7 @@ export function CasamentoClient({ slug }: { slug: string }) {
                     <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                       <Image
                         src={vendor.cover}
-                        alt={`${vendor.name} — ${category.name}`}
+                        alt={`${vendor.name}, ${category.name}`}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"

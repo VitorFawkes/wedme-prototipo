@@ -342,7 +342,7 @@ export function SpecialistWidget() {
                       <p className="text-sm text-foreground leading-relaxed">
                         Oi{partner_1_name ? `, ${partner_1_name}` : ""}! Sou a
                         Isabela, sua especialista dedicada. Me conta em que
-                        posso ajudar — posso tirar dúvidas sobre locais, datas,
+                        posso ajudar. Posso tirar dúvidas sobre locais, datas,
                         contratos, orçamento. O que precisarem. 🤍
                       </p>
                     </div>

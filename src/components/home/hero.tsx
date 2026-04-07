@@ -15,7 +15,7 @@ export function Hero() {
     <section className="relative min-h-[100svh] flex items-center justify-center isolate overflow-hidden">
       <Image
         src="https://welucci.com/wp-content/uploads/2026/01/Capa-principal-Home_11zon-scaled.jpg"
-        alt="Welucci Estaiada — vista para a Ponte Estaiada de São Paulo"
+        alt="Welucci Estaiada, vista para a Ponte Estaiada de São Paulo"
         fill
         priority
         loading="eager"

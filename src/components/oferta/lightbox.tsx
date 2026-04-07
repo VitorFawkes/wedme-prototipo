@@ -122,7 +122,7 @@ export function Lightbox({
           >
             <Image
               src={images[index]}
-              alt={`${alt} — foto ${index + 1} de ${images.length}`}
+              alt={`${alt}, foto ${index + 1} de ${images.length}`}
               fill
               sizes="(max-width: 768px) 100vw, 80vw"
               className="object-contain"

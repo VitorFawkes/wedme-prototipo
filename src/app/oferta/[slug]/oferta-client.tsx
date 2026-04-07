@@ -122,7 +122,7 @@ export function OfertaClient({ slug }: { slug: string }) {
             >
               <Image
                 src={vendor.cover}
-                alt={`${vendor.name} — capa principal`}
+                alt={`${vendor.name}, capa principal`}
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 80vw"
@@ -144,7 +144,7 @@ export function OfertaClient({ slug }: { slug: string }) {
                 >
                   <Image
                     src={img}
-                    alt={`${vendor.name} — foto ${i + 2}`}
+                    alt={`${vendor.name}, foto ${i + 2}`}
                     fill
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -332,7 +332,7 @@ export function OfertaClient({ slug }: { slug: string }) {
                 >
                   <Image
                     src={img}
-                    alt={`${vendor.name} — trabalho ${i + 1}`}
+                    alt={`${vendor.name}, trabalho ${i + 1}`}
                     fill
                     sizes="(max-width: 768px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"

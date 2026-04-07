@@ -162,7 +162,7 @@ export default function MeuCasamentoPage() {
               <FinanceCard
                 label="Disponível"
                 value={
-                  estimated_budget ? formatBRL(remaining) : "—"
+                  estimated_budget ? formatBRL(remaining) : "-"
                 }
               />
               <FinanceCard

@@ -22,7 +22,7 @@ export function VendorCard({ vendor }: { vendor: Vendor }) {
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <Image
           src={vendor.cover}
-          alt={`${vendor.name} — ${vendor.tagline}`}
+          alt={`${vendor.name}, ${vendor.tagline}`}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"

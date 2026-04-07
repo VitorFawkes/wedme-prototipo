@@ -84,7 +84,7 @@ const SCENARIO_DATA: Record<
     dream:
       "Queremos um casamento íntimo ao entardecer, pé na areia, com a família mais próxima. O pôr do sol em Ilhabela é tudo o que sonhamos.",
     intents: ["íntimo", "entardecer", "praia"],
-    danceSong: "At Last — Etta James",
+    danceSong: "At Last, Etta James",
     howMet:
       "A gente se conheceu numa festa de aniversário em 2021. Foi tímido no início, mas três semanas depois não saíamos mais um do lado do outro.",
   },
@@ -113,7 +113,7 @@ const SCENARIO_DATA: Record<
     dream:
       "A gente sonha com um destination wedding em Trancoso. Pé na areia, sem firulas, comida boa e o pôr do sol como cenário.",
     intents: ["destination", "praia", "natureza"],
-    danceSong: "Águas de Março — Tom Jobim",
+    danceSong: "Águas de Março, Tom Jobim",
     howMet: null,
   },
   "grande-quase": {
@@ -127,9 +127,9 @@ const SCENARIO_DATA: Record<
     dream:
       "Queremos uma grande celebração com todos que a gente ama. Festa até o sol nascer, pista lotada, comida farta, banda ao vivo. Que vire história.",
     intents: ["festa", "muitos convidados", "música"],
-    danceSong: "Evidências — Chitãozinho & Xororó",
+    danceSong: "Evidências, Chitãozinho & Xororó",
     howMet:
-      "Nos conhecemos na faculdade em 2018. Demoramos dois anos pra conversar de verdade — depois disso foi tudo muito rápido.",
+      "Nos conhecemos na faculdade em 2018. Demoramos dois anos pra conversar de verdade. Depois disso foi tudo muito rápido.",
   },
 };
 

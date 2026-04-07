@@ -46,8 +46,8 @@ export const triggers: readonly TriggerRule[] = [
     name: "Primeira escolha confirmada",
     priority: 90,
     once: true,
-    position: "top_bar",
-    style: "normal",
+    position: "inline_card",
+    style: "subtle",
     conditions: [{ type: "categories_selected_gte", value: 1 }],
     content: {
       icon: "Sparkles",
@@ -155,11 +155,11 @@ export const triggers: readonly TriggerRule[] = [
   // ============================================================
   {
     slug: "loss-aversion-checkout",
-    name: "Loss aversion, valor travado + prazo",
+    name: "Valores garantidos",
     priority: 88,
     once: false,
-    position: "top_bar",
-    style: "normal",
+    position: "inline_card",
+    style: "subtle",
     conditions: [
       { type: "categories_selected_gte", value: 3 },
       { type: "total_confirmed_gte", value: 20000 },

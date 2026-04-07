@@ -63,7 +63,7 @@ export function formatDateExtended(isoDate: string | null | undefined): string {
  * Versão curta para badges/chips: "15/03/2027" ou "março/2027"
  */
 export function formatDateShort(isoDate: string | null | undefined): string {
-  if (!isoDate) return "—";
+  if (!isoDate) return "-";
   const parts = isoDate.split("-");
   if (parts.length === 2) {
     return `${MESES_PT[parseInt(parts[1], 10) - 1]}/${parts[0]}`;
