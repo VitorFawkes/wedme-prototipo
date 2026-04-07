@@ -207,10 +207,18 @@ export const useCouple = create<CoupleState>()(
     }),
     {
       name: "wewedme-couple",
+      version: 1,
       storage: createJSONStorage(() => localStorage),
       // CRÍTICO: skip hidratação automática. CoupleProvider faz manualmente
       // após mount no client, evitando hydration mismatch SSR/CSR.
       skipHydration: true,
+      migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>;
+        if (version === 0 && state.wedding_profile_slug === "natureza-destination") {
+          state.wedding_profile_slug = "natureza-ar-livre";
+        }
+        return state as CoupleState;
+      },
     },
   ),
 );
