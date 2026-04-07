@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Music2, MapPin, Clock, Heart } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { Ornament } from "@/components/ornaments/ornament";
@@ -35,6 +36,7 @@ import { formatDateExtended } from "@/lib/format";
  * 10. Footer
  */
 export function CasamentoClient({ slug }: { slug: string }) {
+  const router = useRouter();
   const partner_1_name = useCouple((s) => s.partner_1_name);
   const partner_2_name = useCouple((s) => s.partner_2_name);
   const wedding_date = useCouple((s) => s.wedding_date);
@@ -97,6 +99,27 @@ export function CasamentoClient({ slug }: { slug: string }) {
 
   return (
     <main className="bg-background">
+      {/* Barra de navegação fixa sutil */}
+      <nav className="fixed top-0 left-0 right-0 z-40 safe-top bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+          <Link
+            href="/"
+            className="inline-flex items-center min-h-11 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Voltar
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              useCouple.getState().reset();
+              router.replace("/");
+            }}
+            className="inline-flex items-center justify-center min-h-11 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Reiniciar
+          </button>
+        </div>
+      </nav>
       {/* ====================================================
           1. HERO 100svh
       ==================================================== */}

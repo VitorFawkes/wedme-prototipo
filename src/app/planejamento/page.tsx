@@ -30,7 +30,7 @@ export default function PlanejamentoPage() {
   const partner_1_name = useCouple((s) => s.partner_1_name);
   const partner_2_name = useCouple((s) => s.partner_2_name);
   const wedding_profile_slug = useCouple((s) => s.wedding_profile_slug);
-  const detected_intents = useCouple((s) => s.detected_intents);
+  const dream_text = useCouple((s) => s.dream_text);
   const city = useCouple((s) => s.city);
   const wedding_date = useCouple((s) => s.wedding_date);
   const estimated_budget = useCouple((s) => s.estimated_budget);
@@ -78,9 +78,9 @@ export default function PlanejamentoPage() {
           <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-medium text-foreground tracking-editorial leading-tight max-w-3xl mx-auto">
             Entendemos o sonho de vocês
           </h1>
-          {detected_intents.length > 0 && (
+          {dream_text && dream_text.length > 20 && (
             <p className="font-display italic text-base md:text-xl text-muted-foreground mt-4 md:mt-6 max-w-2xl mx-auto leading-relaxed">
-              &ldquo;{detected_intents.join(", ")}&rdquo;. Montamos tudo pensando nisso.
+              &ldquo;{dream_text.length > 120 ? dream_text.slice(0, 120).replace(/\s+\S*$/, "") + "..." : dream_text}&rdquo;
             </p>
           )}
           <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs md:text-sm text-muted-foreground tracking-wide">

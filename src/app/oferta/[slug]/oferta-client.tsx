@@ -391,8 +391,8 @@ export function OfertaClient({ slug }: { slug: string }) {
         </div>
       </main>
 
-      {/* Bottom sheet mobile com preço + CTA */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-card border-t border-border shadow-[0_-4px_20px_rgba(12,1,6,0.08)]">
+      {/* Bottom bar mobile com preço + CTA */}
+      <div className="lg:hidden sticky bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-card border-t border-border shadow-[0_-4px_20px_rgba(12,1,6,0.08)]">
         <div className="px-4 py-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <Overline>A partir de</Overline>
