@@ -3,11 +3,10 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mic, Square } from "lucide-react";
+import { Mic, Pause, Play, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { ChatBubble } from "@/components/onboarding/chat-bubble";
 import { TypingIndicator } from "@/components/onboarding/typing-indicator";
-import { AudioRecorder } from "@/components/onboarding/audio-recorder";
 import { DreamLoading } from "@/components/onboarding/dream-loading";
 import { Ornament } from "@/components/ornaments/ornament";
 import { Overline } from "@/components/ornaments/overline";
@@ -140,11 +139,11 @@ export default function ComecePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [transitionReady, setTransitionReady] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [audioOpen, setAudioOpen] = useState(false);
   const [audioMode, setAudioMode] = useState(false);
 
   // Gravador inline (para audioMode — não usa drawer)
   const [inlineRecording, setInlineRecording] = useState(false);
+  const [inlinePaused, setInlinePaused] = useState(false);
   const [inlineProcessing, setInlineProcessing] = useState(false);
   const [inlineSeconds, setInlineSeconds] = useState(0);
   const [inlineError, setInlineError] = useState<string | null>(null);
@@ -156,6 +155,7 @@ export default function ComecePage() {
   // Dream mode states
   const [dreamMode, setDreamMode] = useState(false);
   const [dreamText, setDreamText] = useState("");
+  const [dreamTextMode, setDreamTextMode] = useState(false);
   const [dreamStage, setDreamStage] = useState<"asking" | "loading" | "revealed">("asking");
   const [profileResult, setProfileResult] = useState<ClassifyDreamResponse | null>(null);
   const dreamTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -352,8 +352,8 @@ export default function ComecePage() {
     ],
   );
 
-  async function handleDreamSubmit() {
-    if (dreamText.trim().length < 20) return;
+  async function submitDream(text: string) {
+    if (text.trim().length < 20) return;
     setDreamStage("loading");
 
     try {
@@ -365,7 +365,7 @@ export default function ComecePage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            dream_text: dreamText,
+            dream_text: text,
             partner_names: `${p1} & ${p2}`,
           }),
         }),
@@ -378,7 +378,7 @@ export default function ComecePage() {
       setProfile(
         data.profile_slug as ProfileSlug,
         data.detected_intents,
-        dreamText,
+        text,
         data.confidence,
       );
       useCouple.getState().markOnboardingComplete();
@@ -390,8 +390,15 @@ export default function ComecePage() {
     }
   }
 
+  function handleDreamSubmit() {
+    submitDream(dreamText);
+  }
+
+  // === Gravador inline unificado (usado tanto no onboarding quanto no sonho) ===
+
   async function inlineStartRecording() {
     setInlineError(null);
+    setInlinePaused(false);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       inlineStreamRef.current = stream;
@@ -402,46 +409,98 @@ export default function ComecePage() {
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) inlineChunksRef.current.push(e.data);
       };
-      recorder.onstop = async () => {
-        const blob = new Blob(inlineChunksRef.current, { type: "audio/webm" });
-        setInlineProcessing(true);
-        try {
-          const formData = new FormData();
-          formData.append("file", blob, "audio.webm");
-          const res = await fetch("/api/transcribe", { method: "POST", body: formData });
-          if (res.status === 503) { setInlineError("Transcrição indisponível. Tente digitar."); setInlineProcessing(false); return; }
-          if (!res.ok) throw new Error("Falha");
-          const data = await res.json();
-          if (data.text) {
-            setAudioMode(false);
-            sendMessage(data.text);
-          }
-        } catch { setInlineError("Não conseguimos processar o áudio. Tentem de novo."); } finally {
-          setInlineProcessing(false);
-          inlineStreamRef.current?.getTracks().forEach((t) => t.stop());
-          inlineStreamRef.current = null;
-          inlineRecorderRef.current = null;
-        }
-      };
 
       recorder.start();
       setInlineRecording(true);
       setInlineSeconds(0);
       inlineTimerRef.current = setInterval(() => {
         setInlineSeconds((s) => {
-          if (s >= 179) { inlineStopRecording(); return 180; }
+          if (s >= 179) { inlinePauseRecording(); return 180; }
           return s + 1;
         });
       }, 1000);
     } catch { setInlineError("Não foi possível acessar o microfone."); }
   }
 
-  function inlineStopRecording() {
-    if (inlineRecorderRef.current && inlineRecorderRef.current.state !== "inactive") {
-      inlineRecorderRef.current.stop();
+  function inlinePauseRecording() {
+    if (inlineRecorderRef.current?.state === "recording") {
+      inlineRecorderRef.current.pause();
     }
+    if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
+    setInlinePaused(true);
+  }
+
+  function inlineResumeRecording() {
+    if (inlineRecorderRef.current?.state === "paused") {
+      inlineRecorderRef.current.resume();
+    }
+    setInlinePaused(false);
+    inlineTimerRef.current = setInterval(() => {
+      setInlineSeconds((s) => {
+        if (s >= 179) { inlinePauseRecording(); return 180; }
+        return s + 1;
+      });
+    }, 1000);
+  }
+
+  async function inlineSendRecording() {
+    if (!inlineRecorderRef.current) return;
+
+    setInlineProcessing(true);
+    setInlinePaused(false);
     setInlineRecording(false);
     if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
+
+    // Parar o recorder gera o blob via onstop
+    const recorder = inlineRecorderRef.current;
+    recorder.onstop = async () => {
+      const blob = new Blob(inlineChunksRef.current, { type: "audio/webm" });
+      try {
+        const formData = new FormData();
+        formData.append("file", blob, "audio.webm");
+        const res = await fetch("/api/transcribe", { method: "POST", body: formData });
+        if (res.status === 503) { setInlineError("Transcrição indisponível. Tente digitar."); setInlineProcessing(false); return; }
+        if (!res.ok) throw new Error("Falha");
+        const data = await res.json();
+        if (data.text) {
+          if (dreamMode) {
+            // No modo sonho: classificar direto, não precisa de textarea
+            setDreamText(data.text);
+            setInlineProcessing(false);
+            // Submeter automaticamente
+            submitDream(data.text);
+          } else {
+            setAudioMode(false);
+            setInlineProcessing(false);
+            sendMessage(data.text);
+          }
+        }
+      } catch {
+        setInlineError("Não conseguimos processar o áudio. Tentem de novo.");
+        setInlineProcessing(false);
+      } finally {
+        inlineStreamRef.current?.getTracks().forEach((t) => t.stop());
+        inlineStreamRef.current = null;
+        inlineRecorderRef.current = null;
+      }
+    };
+
+    if (recorder.state !== "inactive") {
+      recorder.stop();
+    }
+  }
+
+  function inlineDiscardRecording() {
+    if (inlineRecorderRef.current?.state !== "inactive") {
+      try { inlineRecorderRef.current?.stop(); } catch { /* ignore */ }
+    }
+    setInlineRecording(false);
+    setInlinePaused(false);
+    setInlineSeconds(0);
+    if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
+    inlineStreamRef.current?.getTracks().forEach((t) => t.stop());
+    inlineStreamRef.current = null;
+    inlineRecorderRef.current = null;
   }
 
   function handleStartText() {
@@ -643,7 +702,7 @@ export default function ComecePage() {
             />
             <button
               type="button"
-              onClick={() => setAudioOpen(true)}
+              onClick={() => setAudioMode(true)}
               disabled={isLoading}
               className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
               aria-label="Gravar áudio"
@@ -674,14 +733,45 @@ export default function ComecePage() {
         </form>
       )}
 
-      {/* Barra do modo áudio — gravador inline (não cobre o chat) */}
-      {hasStarted && !dreamMode && audioMode && (
+      {/* Gravador inline unificado — onboarding (audioMode) e sonho (dreamMode sem dreamTextMode) */}
+      {((hasStarted && audioMode && !dreamMode) || (dreamMode && dreamStage === "asking" && !dreamTextMode)) && (
         <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border">
           <div className="max-w-2xl mx-auto px-4 md:px-0 py-4 flex flex-col items-center gap-2">
             {inlineProcessing ? (
-              <div className="flex items-center gap-3 py-2">
+              <div className="flex items-center gap-3 py-3">
                 <span className="text-[color:var(--brand-rose)] text-2xl animate-pulse-ornament">◇</span>
                 <span className="text-sm text-muted-foreground">Transcrevendo...</span>
+              </div>
+            ) : inlinePaused ? (
+              <div className="flex flex-col items-center gap-3 w-full">
+                <span className="font-display text-2xl text-foreground tabular-nums">
+                  {Math.floor(inlineSeconds / 60)}:{(inlineSeconds % 60).toString().padStart(2, "0")}
+                </span>
+                <div className="flex items-center gap-3 w-full">
+                  <button
+                    type="button"
+                    onClick={inlineResumeRecording}
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-14 rounded-sm border border-border bg-card text-foreground text-base font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                  >
+                    <Play className="size-5" />
+                    Retomar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={inlineSendRecording}
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-14 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                  >
+                    <Send className="size-4" />
+                    Enviar
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { inlineDiscardRecording(); if (!dreamMode) setAudioMode(false); }}
+                  className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Descartar
+                </button>
               </div>
             ) : inlineRecording ? (
               <div className="flex items-center gap-4 w-full justify-center">
@@ -690,72 +780,67 @@ export default function ComecePage() {
                 </span>
                 <motion.button
                   type="button"
-                  onClick={inlineStopRecording}
+                  onClick={inlinePauseRecording}
                   animate={{ scale: [1, 1.08, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                   className="flex items-center justify-center w-14 h-14 rounded-full bg-destructive text-white"
-                  aria-label="Parar gravação"
+                  aria-label="Pausar gravação"
                 >
-                  <Square className="size-5 fill-white" />
+                  <Pause className="size-5 fill-white" />
                 </motion.button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={inlineStartRecording}
-                className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
-              >
-                <Mic className="size-5" />
-                Gravar áudio
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={inlineStartRecording}
+                  className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                >
+                  <Mic className="size-5" />
+                  Gravar áudio
+                </button>
+                <button
+                  type="button"
+                  onClick={() => dreamMode ? setDreamTextMode(true) : setAudioMode(false)}
+                  className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Prefiro digitar
+                </button>
+              </>
             )}
             {inlineError && (
               <p className="text-sm text-destructive text-center">{inlineError}</p>
-            )}
-            {!inlineRecording && !inlineProcessing && (
-              <button
-                type="button"
-                onClick={() => setAudioMode(false)}
-                className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Prefiro digitar
-              </button>
             )}
           </div>
         </div>
       )}
 
-      {/* Input do sonho (textarea grande) */}
-      {dreamMode && dreamStage === "asking" && (
-        <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border md:relative md:border-t-0 md:bg-transparent md:safe-bottom-0">
-          <div className="max-w-2xl mx-auto px-4 md:px-0 py-3 md:py-6 flex flex-col gap-3">
+      {/* Input do sonho modo texto (quando clicou "Prefiro digitar" no dream) */}
+      {dreamMode && dreamStage === "asking" && dreamTextMode && (
+        <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border">
+          <div className="max-w-2xl mx-auto px-4 md:px-0 py-3 flex flex-col gap-2">
             <textarea
               ref={dreamTextareaRef}
               value={dreamText}
               onChange={(e) => setDreamText(e.target.value)}
               placeholder="Escrevam o que vem à cabeça..."
-              rows={4}
-              className="w-full resize-none rounded-sm border border-border bg-background px-4 py-3 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary leading-relaxed"
+              rows={3}
+              className="w-full resize-none rounded-sm border border-border bg-background px-3 py-2.5 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary leading-normal"
               style={{ fontSize: "16px" }}
-              aria-label="Texto do sonho do casamento"
             />
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Mínimo 20 caracteres.</span>
-              <span aria-live="polite">{dreamText.length}</span>
-            </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleDreamSubmit}
                 disabled={dreamText.trim().length < 20}
-                className="flex-1 inline-flex items-center justify-center min-h-14 px-7 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+                className="flex-1 inline-flex items-center justify-center min-h-12 px-6 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
               >
-                Enviar nosso sonho →
+                Enviar →
               </button>
               <button
                 type="button"
-                onClick={() => setAudioOpen(true)}
-                className="inline-flex items-center justify-center gap-2 min-h-14 px-5 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                onClick={() => setDreamTextMode(false)}
+                className="inline-flex items-center justify-center min-h-12 px-4 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200"
                 aria-label="Gravar áudio"
               >
                 <Mic className="size-5" />
@@ -764,18 +849,6 @@ export default function ComecePage() {
           </div>
         </div>
       )}
-      <AudioRecorder
-        open={audioOpen}
-        onOpenChange={setAudioOpen}
-        onTranscribed={(text) => {
-          if (dreamMode) {
-            setDreamText(text);
-          } else {
-            setAudioMode(false);
-            sendMessage(text);
-          }
-        }}
-      />
     </main>
   );
 }
