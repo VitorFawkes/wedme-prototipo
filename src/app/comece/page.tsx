@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mic } from "lucide-react";
+import { Mic, Square } from "lucide-react";
+import { motion } from "framer-motion";
 import { ChatBubble } from "@/components/onboarding/chat-bubble";
 import { TypingIndicator } from "@/components/onboarding/typing-indicator";
 import { AudioRecorder } from "@/components/onboarding/audio-recorder";
@@ -141,6 +142,16 @@ export default function ComecePage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [audioOpen, setAudioOpen] = useState(false);
   const [audioMode, setAudioMode] = useState(false);
+
+  // Gravador inline (para audioMode — não usa drawer)
+  const [inlineRecording, setInlineRecording] = useState(false);
+  const [inlineProcessing, setInlineProcessing] = useState(false);
+  const [inlineSeconds, setInlineSeconds] = useState(0);
+  const [inlineError, setInlineError] = useState<string | null>(null);
+  const inlineRecorderRef = useRef<MediaRecorder | null>(null);
+  const inlineChunksRef = useRef<Blob[]>([]);
+  const inlineTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const inlineStreamRef = useRef<MediaStream | null>(null);
 
   // Dream mode states
   const [dreamMode, setDreamMode] = useState(false);
@@ -379,6 +390,60 @@ export default function ComecePage() {
     }
   }
 
+  async function inlineStartRecording() {
+    setInlineError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      inlineStreamRef.current = stream;
+      const recorder = new MediaRecorder(stream);
+      inlineRecorderRef.current = recorder;
+      inlineChunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) inlineChunksRef.current.push(e.data);
+      };
+      recorder.onstop = async () => {
+        const blob = new Blob(inlineChunksRef.current, { type: "audio/webm" });
+        setInlineProcessing(true);
+        try {
+          const formData = new FormData();
+          formData.append("file", blob, "audio.webm");
+          const res = await fetch("/api/transcribe", { method: "POST", body: formData });
+          if (res.status === 503) { setInlineError("Transcrição indisponível. Tente digitar."); setInlineProcessing(false); return; }
+          if (!res.ok) throw new Error("Falha");
+          const data = await res.json();
+          if (data.text) {
+            setAudioMode(false);
+            sendMessage(data.text);
+          }
+        } catch { setInlineError("Não conseguimos processar o áudio. Tentem de novo."); } finally {
+          setInlineProcessing(false);
+          inlineStreamRef.current?.getTracks().forEach((t) => t.stop());
+          inlineStreamRef.current = null;
+          inlineRecorderRef.current = null;
+        }
+      };
+
+      recorder.start();
+      setInlineRecording(true);
+      setInlineSeconds(0);
+      inlineTimerRef.current = setInterval(() => {
+        setInlineSeconds((s) => {
+          if (s >= 179) { inlineStopRecording(); return 180; }
+          return s + 1;
+        });
+      }, 1000);
+    } catch { setInlineError("Não foi possível acessar o microfone."); }
+  }
+
+  function inlineStopRecording() {
+    if (inlineRecorderRef.current && inlineRecorderRef.current.state !== "inactive") {
+      inlineRecorderRef.current.stop();
+    }
+    setInlineRecording(false);
+    if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
+  }
+
   function handleStartText() {
     setHasStarted(true);
     const firstQuestion: LocalTurn = {
@@ -609,25 +674,53 @@ export default function ComecePage() {
         </form>
       )}
 
-      {/* Barra do modo áudio — botão grande de gravar + opção de trocar pra texto */}
+      {/* Barra do modo áudio — gravador inline (não cobre o chat) */}
       {hasStarted && !dreamMode && audioMode && (
         <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border">
-          <div className="max-w-2xl mx-auto px-4 md:px-0 py-4 md:py-6 flex flex-col items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setAudioOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
-            >
-              <Mic className="size-5" />
-              Gravar áudio
-            </button>
-            <button
-              type="button"
-              onClick={() => setAudioMode(false)}
-              className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Prefiro digitar
-            </button>
+          <div className="max-w-2xl mx-auto px-4 md:px-0 py-4 flex flex-col items-center gap-2">
+            {inlineProcessing ? (
+              <div className="flex items-center gap-3 py-2">
+                <span className="text-[color:var(--brand-rose)] text-2xl animate-pulse-ornament">◇</span>
+                <span className="text-sm text-muted-foreground">Transcrevendo...</span>
+              </div>
+            ) : inlineRecording ? (
+              <div className="flex items-center gap-4 w-full justify-center">
+                <span className="font-display text-2xl text-foreground tabular-nums">
+                  {Math.floor(inlineSeconds / 60)}:{(inlineSeconds % 60).toString().padStart(2, "0")}
+                </span>
+                <motion.button
+                  type="button"
+                  onClick={inlineStopRecording}
+                  animate={{ scale: [1, 1.08, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="flex items-center justify-center w-14 h-14 rounded-full bg-destructive text-white"
+                  aria-label="Parar gravação"
+                >
+                  <Square className="size-5 fill-white" />
+                </motion.button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={inlineStartRecording}
+                className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+              >
+                <Mic className="size-5" />
+                Gravar áudio
+              </button>
+            )}
+            {inlineError && (
+              <p className="text-sm text-destructive text-center">{inlineError}</p>
+            )}
+            {!inlineRecording && !inlineProcessing && (
+              <button
+                type="button"
+                onClick={() => setAudioMode(false)}
+                className="inline-flex items-center justify-center min-h-11 px-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Prefiro digitar
+              </button>
+            )}
           </div>
         </div>
       )}
