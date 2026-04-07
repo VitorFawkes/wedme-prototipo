@@ -139,7 +139,7 @@ export const venues: readonly Vendor[] = [
       "Jardins cinematográficos",
       "Renovado em 2023",
     ],
-    bio: "Welucci Gardens redefine o que é casar em São Paulo. Jardins cinematográficos, SPA exclusivo para a noiva e espaços renovados em 2023 — cada detalhe foi pensado para que o dia seja perfeito do começo ao fim.",
+    bio: "Welucci Gardens redefine o que é casar em São Paulo. Jardins cinematográficos, SPA exclusivo para a noiva e espaços renovados em 2023, cada detalhe foi pensado para que o dia seja perfeito do começo ao fim.",
     cover: "https://welucci.com/wp-content/uploads/2025/10/welucci-gardens-4.webp",
     portfolio: [
       "https://welucci.com/wp-content/uploads/2025/10/AnyConv.com__thi_previa_CamilaDanilo_044-1-1.webp",
@@ -284,7 +284,7 @@ export const venues: readonly Vendor[] = [
     neighborhood: "Vila Leopoldina",
     tier: 3,
     highlights: ["Teto de vidro", "Parede retrátil", "Recém renovado"],
-    bio: "O Welucci Village tem teto de vidro, parede retrátil e recebeu renovação completa. É o espaço que traduz versatilidade em cada detalhe — ideal para casamentos que combinam intimidade e amplitude.",
+    bio: "O Welucci Village tem teto de vidro, parede retrátil e recebeu renovação completa. É o espaço que traduz versatilidade em cada detalhe, ideal para casamentos que combinam intimidade e amplitude.",
     cover: "https://welucci.com/wp-content/uploads/2025/10/welucci-village-3-1.webp",
     portfolio: [
       "https://welucci.com/wp-content/uploads/2025/10/AnyConv.com__CBT-10320-7.webp",
@@ -332,7 +332,7 @@ export const venues: readonly Vendor[] = [
       "Jardins de inverno",
       "Casamentos intimistas",
     ],
-    bio: "O Welucci Single traz inspiração nova-iorquina para casamentos intimistas em São Paulo. Jardins de inverno, atmosfera urbana sofisticada e escala humana — para celebrações que privilegiam a proximidade.",
+    bio: "O Welucci Single traz inspiração nova-iorquina para casamentos intimistas em São Paulo. Jardins de inverno, atmosfera urbana sofisticada e escala humana, para celebrações que privilegiam a proximidade.",
     cover: "https://welucci.com/wp-content/uploads/2025/11/Single-5.webp",
     portfolio: [
       "https://welucci.com/wp-content/uploads/2025/11/Single-7.webp",
@@ -565,7 +565,7 @@ export const venues: readonly Vendor[] = [
     slug: "welucci-kratos",
     name: "Welucci Kratos",
     category: "local",
-    tagline: "Imponente e sofisticado — à altura da sua história de amor",
+    tagline: "Imponente e sofisticado, à altura da sua história de amor",
     city: "Vinhedo",
     state: "SP",
     tier: 2,
@@ -574,7 +574,7 @@ export const venues: readonly Vendor[] = [
       "150 vagas com valet",
       "30 min de São Paulo",
     ],
-    bio: "Welucci Kratos impressiona pela chapel piramidal instagramável e pela escala — 150 vagas com valet, a apenas 30 minutos de São Paulo. Um cenário imponente para casamentos que não passam despercebidos.",
+    bio: "Welucci Kratos impressiona pela chapel piramidal instagramável e pela escala, 150 vagas com valet, a apenas 30 minutos de São Paulo. Um cenário imponente para casamentos que não passam despercebidos.",
     cover: "https://welucci.com/wp-content/uploads/2025/11/BANNER-4.jpeg",
     portfolio: [
       "https://welucci.com/wp-content/uploads/2025/11/Kratos-19.webp",

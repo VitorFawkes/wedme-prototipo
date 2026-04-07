@@ -42,7 +42,7 @@ export const profiles: readonly Profile[] = [
     slug: "intimo-emocional",
     name: "Íntimo & Emocional",
     description:
-      "Um casamento pequeno, onde cada convidado importa e cada detalhe conta uma história. A emoção acima de tudo — e a certeza de que menos pode ser muito mais.",
+      "Um casamento pequeno, onde cada convidado importa e cada detalhe conta uma história. A emoção acima de tudo, e a certeza de que menos pode ser muito mais.",
     detection_keywords: [
       "íntimo",
       "intimista",
@@ -71,7 +71,7 @@ export const profiles: readonly Profile[] = [
     slug: "minimalista-moderno",
     name: "Minimalista Moderno",
     description:
-      "Design contemporâneo, paleta sóbria e uma celebração sem excessos. Só o que importa, feito com excelência — arquitetura, luz e atmosfera no lugar do exagero.",
+      "Design contemporâneo, paleta sóbria e uma celebração sem excessos. Só o que importa, feito com excelência, arquitetura, luz e atmosfera no lugar do exagero.",
     detection_keywords: [
       "minimalista",
       "moderno",
@@ -135,7 +135,7 @@ export const profiles: readonly Profile[] = [
     slug: "grande-celebracao",
     name: "Grande Celebração",
     description:
-      "Muitos convidados, festa até o sol nascer, pista cheia e comemoração sem medida. A alegria coletiva como protagonista — o tipo de casamento que vira história.",
+      "Muitos convidados, festa até o sol nascer, pista cheia e comemoração sem medida. A alegria coletiva como protagonista, o tipo de casamento que vira história.",
     detection_keywords: [
       "festa",
       "grande",

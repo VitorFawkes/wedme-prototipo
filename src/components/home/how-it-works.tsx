@@ -11,7 +11,7 @@ const STEPS = [
   {
     Icon: Sparkles,
     title: "Vocês contam o sonho",
-    body: "Uma assistente entende como vocês imaginam o casamento — por texto ou por áudio. Sem formulário, sem dropdown infinito.",
+    body: "Uma assistente entende como vocês imaginam o casamento, por texto ou por áudio. Sem formulário, sem dropdown infinito.",
   },
   {
     Icon: Compass,

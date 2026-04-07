@@ -11,7 +11,7 @@ export const homeTestimonials = [
     city: "São Paulo, SP",
     date: "março de 2025",
     quote:
-      "A we.wedme transformou o que seria estresse em pura emoção. Escolhemos tudo em duas semanas — e no dia, foi perfeito.",
+      "A we.wedme transformou o que seria estresse em pura emoção. Escolhemos tudo em duas semanas, e no dia, foi perfeito.",
   },
   {
     coupleName: "Maria & Lucas",
@@ -27,7 +27,7 @@ export const homeTestimonials = [
     city: "Guarujá, SP",
     date: "janeiro de 2026",
     quote:
-      "Nosso casamento pé na areia foi mágico. A curadoria acertou em cheio — cada profissional entendeu o que a gente sonhava.",
+      "Nosso casamento pé na areia foi mágico. A curadoria acertou em cheio, cada profissional entendeu o que a gente sonhava.",
   },
 ] as const;
 
@@ -38,11 +38,11 @@ export const homeFaq = [
   },
   {
     q: "Preciso falar diretamente com os profissionais?",
-    a: "Não. A gente cuida de tudo — da primeira conversa ao pagamento. Vocês interagem apenas com a plataforma. É por isso que o processo é tão tranquilo.",
+    a: "Não. A gente cuida de tudo, da primeira conversa ao pagamento. Vocês interagem apenas com a plataforma. É por isso que o processo é tão tranquilo.",
   },
   {
     q: "E se algum imprevisto acontecer no meu dia?",
-    a: "Cada profissional é verificado e tem backup. Se qualquer imprevisto impedir a entrega, substituímos por um equivalente curado — ou devolvemos 100% do valor pago mais R$500 de crédito.",
+    a: "Cada profissional é verificado e tem backup. Se qualquer imprevisto impedir a entrega, substituímos por um equivalente curado, ou devolvemos 100% do valor pago mais R$500 de crédito.",
   },
   {
     q: "Como funciona o pagamento?",

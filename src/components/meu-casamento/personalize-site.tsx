@@ -58,7 +58,7 @@ export function PersonalizeSite() {
           <strong className="text-foreground font-medium">
             muito mais bonito
           </strong>{" "}
-          com detalhes pessoais. Sem pressão — tudo é opcional.
+          com detalhes pessoais. Sem pressão, tudo é opcional.
         </p>
       </div>
 
@@ -180,7 +180,7 @@ export function PersonalizeSite() {
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  Um parágrafo sobre o começo — é o que mais emociona quem abrir
+                  Um parágrafo sobre o começo. É o que mais emociona quem abrir
                   o site.
                 </p>
               )}

@@ -34,7 +34,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Sparkles",
       title: "Bem-vindos, {nome_1} e {nome_2}",
-      body: "Montamos este caminho olhando para o sonho de vocês — começando por {primeira_categoria}, que é onde tudo costuma fazer mais diferença para casamentos {profile_name}. Podem começar pela ordem ou pela categoria que mais animar.",
+      body: "Montamos este caminho olhando para o sonho de vocês. Começamos por {primeira_categoria}, que é onde tudo costuma fazer mais diferença para casamentos {profile_name}. Podem começar pela ordem ou pela categoria que mais animar.",
     },
   },
 
@@ -52,7 +52,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Sparkles",
       title: "Primeira escolha feita 🤍",
-      body: "A partir de agora, cada categoria confirmada trava o preço e aciona nosso time por trás. Vocês escolhem — a gente resolve.",
+      body: "A partir de agora, cada categoria confirmada trava o preço e aciona nosso time por trás. Vocês escolhem, a gente resolve.",
     },
   },
 
@@ -70,7 +70,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Users",
       title: "Casais com perfil parecido",
-      body: "Nos últimos 3 meses, {social_proof_count} casais {profile_name} em {cidade} escolheram {vendor_destaque} nesta categoria. Vocês podem explorar tudo — achamos justo vocês saberem por onde os outros começam.",
+      body: "Nos últimos 3 meses, {social_proof_count} casais {profile_name} em {cidade} escolheram {vendor_destaque} nesta categoria. Vocês podem explorar tudo. Achamos justo saberem por onde os outros começam.",
     },
   },
 
@@ -91,7 +91,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Clock",
       title: "{data_extensa}",
-      body: "{Este_tipo} tem esta data livre — mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
+      body: "{Este_tipo} tem esta data livre, mas tem outra proposta em aberto para o mesmo fim de semana. Normalmente definem em 72 horas.",
     },
   },
 
@@ -127,7 +127,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Target",
       title: "{match_percent}% de match com o perfil de vocês",
-      body: "Nossa curadoria cruza {profile_name} + {cidade} + o estilo do portfólio {deste_tipo}. Não é horóscopo — é análise real de compatibilidade.",
+      body: "Nossa curadoria cruza {profile_name}, {cidade} e o estilo do portfólio {deste_tipo}. Não é horóscopo, é análise real de compatibilidade.",
     },
   },
 
@@ -145,7 +145,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Gift",
       title: "Um presente nosso pra vocês",
-      body: "Vocês confirmaram 3 categorias. Como reconhecimento, estamos oferecendo um ensaio pré-wedding completo com um dos nossos fotógrafos parceiros — por nossa conta. É nosso jeito de dizer obrigado.",
+      body: "Vocês confirmaram 3 categorias. Como reconhecimento, estamos oferecendo um ensaio pré-wedding completo com um dos nossos fotógrafos parceiros, por nossa conta. É nosso jeito de dizer obrigado.",
       cta_text: "Aceitar presente",
     },
   },
@@ -155,7 +155,7 @@ export const triggers: readonly TriggerRule[] = [
   // ============================================================
   {
     slug: "loss-aversion-checkout",
-    name: "Loss aversion — valor travado + prazo",
+    name: "Loss aversion, valor travado + prazo",
     priority: 88,
     once: false,
     position: "top_bar",
@@ -179,7 +179,7 @@ export const triggers: readonly TriggerRule[] = [
   // ============================================================
   {
     slug: "quase-la",
-    name: "Quase lá — faltam R$X pra completar o orçamento",
+    name: "Quase lá, faltam R$X pra completar o orçamento",
     priority: 72,
     once: false,
     position: "inline_card",
@@ -212,7 +212,7 @@ export const triggers: readonly TriggerRule[] = [
     content: {
       icon: "Users",
       title: "Filtrado para {guest_count} convidados",
-      body: "Já priorizamos espaços com capacidade adequada. Os locais abaixo acomodam confortavelmente o tamanho do casamento de vocês — sem pista vazia, sem aperto.",
+      body: "Já priorizamos espaços com capacidade adequada. Os locais abaixo acomodam confortavelmente o tamanho do casamento de vocês, sem pista vazia, sem aperto.",
     },
   },
 ] as const;

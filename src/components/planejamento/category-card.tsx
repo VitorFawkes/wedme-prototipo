@@ -105,7 +105,7 @@ export function CategoryCard({
             {category.name}
           </h3>
           <p className="text-xs text-muted-foreground italic mb-3">
-            Pulada — você pode voltar quando quiser
+            Pulada. Vocês podem voltar quando quiserem.
           </p>
           <button
             type="button"
