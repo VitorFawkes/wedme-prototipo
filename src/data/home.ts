@@ -55,7 +55,8 @@ export const homeFaq = [
 ] as const;
 
 export const homeNumbers = [
-  { value: "1.247", label: "Casais realizados" },
-  { value: "320", label: "Profissionais curados" },
-  { value: "4.9★", label: "Avaliação média" },
+  { value: "+1.500", label: "Casamentos realizados nos últimos anos" },
+  { value: "+12", label: "Opções de espaços disponíveis" },
+  { value: "+1.000", label: "Pessoas fazem parte da Welucci" },
+  { value: "NPS 65", label: "A única empresa no mercado de eventos a medir o NPS" },
 ] as const;

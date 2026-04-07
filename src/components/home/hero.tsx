@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Overline } from "@/components/ornaments/overline";
 
 /**
  * Hero da home (briefing §5.1).
@@ -29,21 +28,13 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      <div className="relative px-6 md:px-12 py-24 md:py-32 text-center max-w-3xl mx-auto safe-top">
-        <Overline className="text-white/70 mb-6 md:mb-8">
-          Curadoria de casamentos
-        </Overline>
-
-        <h1 className="font-display font-medium text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-editorial">
-          Seu casamento
-          <br />
-          dos sonhos,
-          <br />
-          do início ao fim
+      <div className="relative px-6 md:px-12 py-24 md:py-32 text-center max-w-4xl mx-auto safe-top">
+        <h1 className="font-display font-medium text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-editorial text-balance">
+          Planejar seu casamento pode ser fácil, feliz e sem burocracia.
         </h1>
 
         <p className="mt-6 md:mt-8 text-base md:text-lg text-white/85 font-sans leading-relaxed max-w-md mx-auto">
-          A gente cuida dos profissionais. Vocês cuidam do sonho.
+          Faça como mais de 1.200 casais.
         </p>
 
         <div className="mt-8 md:mt-10">
@@ -54,10 +45,6 @@ export function Hero() {
             Planejar meu casamento
           </Link>
         </div>
-
-        <p className="mt-6 text-xs md:text-sm text-white/60 tracking-wide">
-          Três minutos e a jornada de vocês começa.
-        </p>
       </div>
     </section>
   );
