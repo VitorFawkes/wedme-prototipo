@@ -39,7 +39,7 @@ const GREETING = `Oi! Eu sou a assistente da we.wedme. É bem rápido, são só 
 
 const AUDIO_QUESTIONS_LIST = `Pra facilitar, aqui vão as perguntas. Podem responder tudo de uma vez no áudio:
 
-1. Qual o melhor WhatsApp de vocês?
+1. Qual o melhor WhatsApp de vocês? (Com DDD, tipo 11 99999-1234)
 2. Como vocês se chamam?
 3. Já têm uma data ou ideia de mês pro casamento?
 4. Em qual cidade ou região?
@@ -509,7 +509,7 @@ export default function ComecePage() {
       id: `a-intro-${Date.now()}`,
       role: "assistant",
       content:
-        "Que bom! Pra começar, qual o melhor WhatsApp pra gente se comunicar com vocês?",
+        "Que bom! Pra começar, qual o melhor WhatsApp pra gente se comunicar com vocês? (Com DDD, tipo 11 99999-1234)",
     };
     setTurns((prev) => [...prev, firstQuestion]);
     appendChatTurn({
