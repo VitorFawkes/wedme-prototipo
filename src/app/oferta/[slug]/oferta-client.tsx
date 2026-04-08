@@ -14,12 +14,14 @@ import {
 import { TriggerInlineCard } from "@/components/triggers/trigger-inline-card";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
 import { Lightbox } from "@/components/oferta/lightbox";
+import { ServiceSelectionUI } from "@/components/oferta/service-selection-ui";
 import { Badge } from "@/components/ui/badge";
 import { Overline } from "@/components/ornaments/overline";
 import { useCouple } from "@/store/couple";
 import { getVendorOrVenueBySlug } from "@/lib/couple-helpers";
 import { formatBRL, formatDateExtended } from "@/lib/format";
 import { categories } from "@/data/categories";
+import { CATEGORY_SERVICES } from "@/data/services";
 import { cn } from "@/lib/utils";
 import type { Vendor } from "@/types";
 
@@ -236,10 +238,10 @@ export function OfertaClient({ slug }: { slug: string }) {
                 </p>
 
                 <a
-                  href="#pacotes"
+                  href="#servicos"
                   className="inline-flex items-center justify-center w-full min-h-12 px-5 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors"
                 >
-                  Ver pacotes →
+                  Ver serviços →
                 </a>
               </div>
             </aside>
@@ -312,6 +314,29 @@ export function OfertaClient({ slug }: { slug: string }) {
               })}
             </div>
           </section>
+
+          {/* Serviços individuais (novo sistema) */}
+          {vendor && (
+            <section id="servicos" className="mb-12 md:mb-16 scroll-mt-20">
+              <h2 className="font-display text-3xl md:text-4xl font-medium text-foreground tracking-editorial mb-6 md:mb-8">
+                Monte sua seleção
+              </h2>
+              {(() => {
+                const catServices = CATEGORY_SERVICES[vendor.category];
+                if (!catServices) return null;
+                return (
+                  <ServiceSelectionUI
+                    vendorSlug={vendor.slug}
+                    categorySlug={vendor.category}
+                    services={vendor.services ?? catServices.services}
+                    bringYourOwn={vendor.bring_your_own ?? catServices.bring_your_own}
+                    faq={vendor.faq ?? catServices.faq}
+                    colorPalettes={vendor.color_palettes ?? catServices.color_palettes}
+                  />
+                );
+              })()}
+            </section>
+          )}
 
           {/* Galeria de trabalhos */}
           <section className="bg-muted -mx-4 md:-mx-8 px-4 md:px-8 py-12 md:py-16 mb-12 md:mb-16">
@@ -413,10 +438,10 @@ export function OfertaClient({ slug }: { slug: string }) {
             )}
           </div>
           <a
-            href="#pacotes"
+            href="#servicos"
             className="shrink-0 inline-flex items-center justify-center min-h-12 px-5 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors"
           >
-            Ver pacotes →
+            Ver serviços →
           </a>
         </div>
       </div>

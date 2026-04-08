@@ -12,10 +12,13 @@ import {
   useInlineTriggers,
 } from "@/components/triggers/trigger-renderer";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
+import { BottomTabNav } from "@/components/layout/bottom-tab-nav";
 import { PersonalizeSite } from "@/components/meu-casamento/personalize-site";
 import { Overline } from "@/components/ornaments/overline";
 import { Ornament } from "@/components/ornaments/ornament";
 import { useCouple } from "@/store/couple";
+import { COLOR_PALETTES } from "@/data/services";
+import { profiles } from "@/data/profiles";
 import {
   getCategoriesOfPath,
   getCoupleSlug,
@@ -50,6 +53,9 @@ export default function MeuCasamentoPage() {
   const selections = useCouple((s) => s.selections);
   const skipped_categories = useCouple((s) => s.skipped_categories);
   const onboardingComplete = useCouple((s) => s.onboarding_complete);
+  const colorPalette = useCouple((s) => s.wedding_color_palette);
+  const scenario = useCouple((s) => s.wedding_scenario);
+  const guest_count = useCouple((s) => s.guest_count);
 
   const { triggers: inlineTriggers, dismiss } = useInlineTriggers();
 
@@ -148,6 +154,40 @@ export default function MeuCasamentoPage() {
               ))}
             </div>
           )}
+
+          {/* Website CTA */}
+          <section className="bg-card border border-border rounded-md p-6 md:p-8">
+            <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground tracking-editorial italic leading-tight mb-3">
+              Website
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+              Você ainda não criou o site do seu casamento. Nele seus convidados poderão confirmar presença e também ver os detalhes da celebração.
+            </p>
+            <Link
+              href={slug ? `/casamento/${slug}` : "#"}
+              className="inline-flex items-center justify-center min-h-11 px-6 py-3 rounded-sm border border-primary text-primary text-sm font-medium tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+            >
+              Criar Website
+            </Link>
+          </section>
+
+          {/* Detalhes do casamento */}
+          <section className="bg-secondary/50 rounded-md p-6 md:p-8 space-y-0 divide-y divide-border">
+            <DetailRow label="Data" value={wedding_date ? formatDateExtended(wedding_date) : "Não definida"} />
+            <DetailRow label="Cidade" value={city ?? "Não definida"} />
+            <DetailRow label="Convidados" value={guest_count ? `${guest_count} convidados` : "Não definido"} />
+            <DetailRow
+              label="Plano"
+              value={wedding_profile_slug ? (profiles.find(p => p.slug === wedding_profile_slug)?.name ?? "Não definido") : "Não definido"}
+              alterHref="/comece/sonho"
+            />
+            <DetailRow label="Cenário" value={scenario ?? "Não definido"} alterHref="/planejamento" />
+            <DetailRow
+              label="Paleta de cores"
+              value={colorPalette ? (COLOR_PALETTES.find(p => p.id === colorPalette)?.name ?? "Não definida") : "Não definida"}
+              alterHref="/planejamento/decoracao"
+            />
+          </section>
 
           {/* Resumo financeiro */}
           <section>
@@ -301,6 +341,7 @@ export default function MeuCasamentoPage() {
           )}
         </div>
       </main>
+      <BottomTabNav />
       <SpecialistWidget />
     </>
   );
@@ -313,6 +354,33 @@ function FinanceCard({ label, value }: { label: string; value: string }) {
         {value}
       </p>
       <Overline className="mt-2">{label}</Overline>
+    </div>
+  );
+}
+
+function DetailRow({
+  label,
+  value,
+  alterHref,
+}: {
+  label: string;
+  value: string;
+  alterHref?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between py-4">
+      <div>
+        <p className="text-xs text-muted-foreground tracking-wide">{label}</p>
+        <p className="font-display text-base md:text-lg font-medium text-foreground">{value}</p>
+      </div>
+      {alterHref && (
+        <Link
+          href={alterHref}
+          className="text-sm text-primary font-medium tracking-wide hover:underline"
+        >
+          alterar
+        </Link>
+      )}
     </div>
   );
 }

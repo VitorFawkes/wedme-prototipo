@@ -1,42 +1,45 @@
 import Link from "next/link";
+import { Camera, Globe, Play, Music2 } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 
-/**
- * Footer da home (briefing §5.1 #7).
- *
- * bg-foreground text-background. Mobile: stack. Desktop: 3 colunas.
- */
-
-/**
- * Colunas do footer. Os links abaixo apontam para âncoras dentro da home,
- * que existem de fato (cada seção tem id próprio). Mantemos apenas
- * navegação real — links institucionais "Sobre/Imprensa/etc" foram
- * removidos porque ainda não têm destino e parar em # é decepção.
- */
 const COLUMNS = [
+  {
+    title: "Sobre",
+    links: [
+      { label: "Quem somos", href: "/#como-funciona" },
+      { label: "Depoimentos", href: "/#depoimentos" },
+      { label: "Destinos", href: "/#destinos" },
+    ],
+  },
   {
     title: "Plataforma",
     links: [
-      { label: "Como funciona", href: "/#como-funciona" },
-      { label: "Espaços parceiros", href: "/#venues" },
-      { label: "Depoimentos", href: "/#depoimentos" },
-      { label: "Perguntas frequentes", href: "/#faq" },
+      { label: "Planejar casamento", href: "/comece" },
+      { label: "Meu casamento", href: "/meu-casamento" },
+      { label: "Contato", href: "/#contato" },
     ],
   },
   {
-    title: "Para casais",
+    title: "Conta",
     links: [
-      { label: "Planejar meu casamento", href: "/comece" },
-      { label: "Meu casamento", href: "/meu-casamento" },
+      { label: "Minha conta", href: "/prototipo" },
+      { label: "Perguntas frequentes", href: "/#faq" },
     ],
   },
+] as const;
+
+const SOCIALS = [
+  { label: "Instagram", icon: Camera, href: "/prototipo" },
+  { label: "Facebook", icon: Globe, href: "/prototipo" },
+  { label: "YouTube", icon: Play, href: "/prototipo" },
+  { label: "TikTok", icon: Music2, href: "/prototipo" },
 ] as const;
 
 export function Footer() {
   return (
     <footer className="bg-foreground text-background py-16 md:py-20 px-6 md:px-12 safe-bottom">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 mb-12 md:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div>
             <Logo variant="light" className="text-2xl mb-4" />
             <p className="text-sm text-background/70 leading-relaxed max-w-xs">
@@ -65,12 +68,26 @@ export function Footer() {
           ))}
         </div>
 
+        {/* Social icons */}
+        <div className="flex items-center justify-center md:justify-start gap-4 mb-8">
+          {SOCIALS.map((s) => (
+            <Link
+              key={s.label}
+              href={s.href}
+              aria-label={s.label}
+              className="w-10 h-10 rounded-full bg-background/10 flex items-center justify-center text-background/70 hover:text-primary hover:bg-background/20 transition-colors duration-200"
+            >
+              <s.icon className="w-5 h-5" />
+            </Link>
+          ))}
+        </div>
+
         <div className="pt-8 border-t border-background/20 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-xs text-background/50 tracking-wide">
             © {new Date().getFullYear()} we.wedme. Todos os direitos reservados.
           </p>
           <p className="text-xs text-background/50 tracking-wide">
-            Feito com carinho em São Paulo, Brasil.
+            Feito com carinho em Curitiba, Brasil.
           </p>
         </div>
       </div>

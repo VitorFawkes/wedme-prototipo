@@ -8,6 +8,7 @@ import { ProgressFooter } from "@/components/planejamento/progress-footer";
 import { TriggerInlineCard } from "@/components/triggers/trigger-inline-card";
 import { TriggerRenderer, useInlineTriggers } from "@/components/triggers/trigger-renderer";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
+import { BottomTabNav } from "@/components/layout/bottom-tab-nav";
 import { Overline } from "@/components/ornaments/overline";
 import { useCouple } from "@/store/couple";
 import { profiles } from "@/data/profiles";
@@ -163,6 +164,7 @@ export default function PlanejamentoPage() {
       </main>
 
       <ProgressFooter />
+      <BottomTabNav />
       <SpecialistWidget />
     </>
   );

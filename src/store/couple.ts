@@ -41,6 +41,10 @@ type CoupleState = {
   selections: Selection[];
   skipped_categories: CategorySlug[];
 
+  // Paleta de cores e cenário
+  wedding_color_palette: string | null;
+  wedding_scenario: string | null;
+
   // Estado da jornada
   journey_status: JourneyStatus;
   journey_started_at: string | null;
@@ -71,6 +75,8 @@ type CoupleState = {
   removeSelection: (categorySlug: CategorySlug) => void;
   skipCategory: (slug: CategorySlug) => void;
   unskipCategory: (slug: CategorySlug) => void;
+  setColorPalette: (paletteId: string | null) => void;
+  setScenario: (scenario: string | null) => void;
   dismissTrigger: (slug: string) => void;
   markTriggerFired: (slug: string) => void;
   setStatus: (s: JourneyStatus) => void;
@@ -97,6 +103,8 @@ const initialState = {
   profile_confidence: null,
   selections: [],
   skipped_categories: [],
+  wedding_color_palette: null,
+  wedding_scenario: null,
   journey_status: "onboarding" as JourneyStatus,
   journey_started_at: null,
   created_at: null,
@@ -186,6 +194,10 @@ export const useCouple = create<CoupleState>()(
             (c) => c !== slug,
           ),
         })),
+
+      setColorPalette: (paletteId) => set({ wedding_color_palette: paletteId }),
+
+      setScenario: (scenario) => set({ wedding_scenario: scenario }),
 
       dismissTrigger: (slug) =>
         set((state) => ({

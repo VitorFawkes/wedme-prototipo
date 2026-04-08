@@ -11,6 +11,7 @@ import { Overline } from "@/components/ornaments/overline";
 import { Ornament } from "@/components/ornaments/ornament";
 import { CelebrationScreen } from "@/components/checkout/celebration";
 import { SpecialistWidget } from "@/components/specialist/specialist-widget";
+import { BottomTabNav } from "@/components/layout/bottom-tab-nav";
 import { useCouple } from "@/store/couple";
 import {
   getCategoriesOfPath,
@@ -270,6 +271,67 @@ export default function CheckoutPage() {
             </div>
           </section>
 
+          {/* Pagamento (mockup) */}
+          <section className="bg-card border border-border rounded-md p-6 md:p-8">
+            <h2 className="font-display text-2xl md:text-3xl font-medium text-foreground tracking-editorial mb-6">
+              Pagamento
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-muted-foreground tracking-wide block mb-1.5">
+                  Número do cartão
+                </label>
+                <input
+                  type="text"
+                  placeholder="0000 0000 0000 0000"
+                  maxLength={19}
+                  className="w-full min-h-11 px-4 py-3 rounded-sm border border-input bg-background text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wide block mb-1.5">
+                    Validade
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="MM/AA"
+                    maxLength={5}
+                    className="w-full min-h-11 px-4 py-3 rounded-sm border border-input bg-background text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wide block mb-1.5">
+                    CVV
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="123"
+                    maxLength={4}
+                    className="w-full min-h-11 px-4 py-3 rounded-sm border border-input bg-background text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-muted-foreground tracking-wide block mb-1.5">
+                  Nome no cartão
+                </label>
+                <input
+                  type="text"
+                  placeholder="Como aparece no cartão"
+                  className="w-full min-h-11 px-4 py-3 rounded-sm border border-input bg-background text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                />
+              </div>
+            </div>
+
+            <p className="mt-4 text-xs text-muted-foreground">
+              Protótipo. Nenhum dado é processado ou armazenado.
+            </p>
+          </section>
+
           {/* Confirmação */}
           <section className="space-y-4">
             <button
@@ -314,6 +376,7 @@ export default function CheckoutPage() {
           </section>
         </div>
       </main>
+      <BottomTabNav />
       <SpecialistWidget />
     </>
   );

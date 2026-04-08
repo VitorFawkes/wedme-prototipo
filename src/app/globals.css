@@ -44,28 +44,28 @@
 }
 
 :root {
-  /* Paleta we.wedme — briefing §3.1 */
+  /* Paleta we.wedme — rosa/pink (ref. protótipo visual) */
   --background: #FEFAF3;          /* creme quente */
   --foreground: #0C0106;          /* preto quase-bordeaux */
   --card: #FFFFFF;
   --card-foreground: #0C0106;
   --popover: #FFFFFF;
   --popover-foreground: #0C0106;
-  --primary: #7F0E4A;             /* bordeaux */
+  --primary: #D4869C;             /* soft rose */
   --primary-foreground: #FFFFFF;
   --secondary: #FAEDD2;           /* bege quente */
   --secondary-foreground: #0C0106;
   --muted: #FAEDD2;
   --muted-foreground: #777777;
-  --accent: #EBE8E9;              /* blush */
+  --accent: #F5E8EF;              /* very light pink */
   --accent-foreground: #0C0106;
   --destructive: #B0342A;
-  --border: #B39EA9;              /* mauve */
-  --input: #B39EA9;
-  --ring: #7F0E4A;
+  --border: #E0C5CF;              /* soft pink border */
+  --input: #E0C5CF;
+  --ring: #D4869C;
 
-  --brand-wine: #420926;          /* hover do botão primário */
-  --brand-rose: #C45F9B;          /* acento secundário, ornamentos */
+  --brand-wine: #B56B7E;          /* hover do botão primário (rose hover) */
+  --brand-rose: #E8A0BF;          /* acento secundário, ornamentos */
 
   --radius: 0.25rem;
 
@@ -82,20 +82,20 @@
   --card-foreground: #0C0106;
   --popover: #FFFFFF;
   --popover-foreground: #0C0106;
-  --primary: #7F0E4A;
+  --primary: #D4869C;
   --primary-foreground: #FFFFFF;
   --secondary: #FAEDD2;
   --secondary-foreground: #0C0106;
   --muted: #FAEDD2;
   --muted-foreground: #777777;
-  --accent: #EBE8E9;
+  --accent: #F5E8EF;
   --accent-foreground: #0C0106;
   --destructive: #B0342A;
-  --border: #B39EA9;
-  --input: #B39EA9;
-  --ring: #7F0E4A;
-  --brand-wine: #420926;
-  --brand-rose: #C45F9B;
+  --border: #E0C5CF;
+  --input: #E0C5CF;
+  --ring: #D4869C;
+  --brand-wine: #B56B7E;
+  --brand-rose: #E8A0BF;
 }
 
 /* ============================================================

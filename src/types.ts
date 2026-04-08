@@ -95,6 +95,47 @@ export type Vendor = {
   unavailable_dates: string[];
   highlights?: string[];
   tier?: number;
+  services?: ServiceGroup[];
+  bring_your_own?: BringYourOwnOption[];
+  faq?: CategoryFAQ[];
+  color_palettes?: ColorPalette[];
+};
+
+// ============================================================
+// Serviços individuais (seleção item-a-item)
+// ============================================================
+
+export type ServiceItem = {
+  id: string;
+  name: string;
+  price: number;
+  category: "base" | "addon" | "infrastructure";
+  description?: string;
+};
+
+export type ServiceGroup = {
+  id: string;
+  name: string;
+  items: ServiceItem[];
+  default_items: string[];
+  description?: string;
+};
+
+export type BringYourOwnOption = {
+  id: string;
+  label: string;
+  infrastructure_items: ServiceItem[];
+};
+
+export type ColorPalette = {
+  id: string;
+  name: string;
+  colors: string[];
+};
+
+export type CategoryFAQ = {
+  question: string;
+  answer: string;
 };
 
 // ============================================================
@@ -107,6 +148,8 @@ export type Selection = {
   package_id: string;
   quoted_price: number;
   selected_at: string; // ISO
+  selected_item_ids?: string[];
+  is_bring_your_own?: boolean;
 };
 
 export type ChatTurn = {
