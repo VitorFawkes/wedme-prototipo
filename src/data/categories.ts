@@ -1,7 +1,7 @@
 import type { Category } from "@/types";
 
 /**
- * As 9 categorias da jornada do casal (briefing §5.4).
+ * As 14 categorias da jornada do casal (briefing §5.4).
  *
  * O ícone é o nome do componente Lucide — usado em runtime via lookup,
  * pra evitar import dinâmico de todos os ícones.
@@ -60,6 +60,36 @@ export const categories: readonly Category[] = [
     name: "Filmagem",
     short_description: "O filme que vocês vão assistir mil vezes",
     icon_name: "Film",
+  },
+  {
+    slug: "doces",
+    name: "Doces & Bolo",
+    short_description: "A doçura que completa a celebração",
+    icon_name: "Cake",
+  },
+  {
+    slug: "roupa-noivo",
+    name: "Roupa do Noivo",
+    short_description: "O traje que marca o grande dia",
+    icon_name: "Shirt",
+  },
+  {
+    slug: "mobiliario",
+    name: "Mobiliário",
+    short_description: "O cenário que acolhe cada momento",
+    icon_name: "Armchair",
+  },
+  {
+    slug: "beleza",
+    name: "Beleza",
+    short_description: "O brilho que vai acompanhar vocês o dia todo",
+    icon_name: "Sparkles",
+  },
+  {
+    slug: "bar",
+    name: "Bar & Drinks",
+    short_description: "O brinde que abre a festa",
+    icon_name: "Wine",
   },
 ] as const;
 

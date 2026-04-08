@@ -104,6 +104,57 @@ export const UNSPLASH = {
     u("photo-1591604466107-ec97de577aff"),
     u("photo-1485872299829-c673f5194813"),
   ],
+
+  // Doces, brigadeiros, mesa de doces, bolo de casamento
+  doces: [
+    u("photo-1535254973040-607b474cb50d"),
+    u("photo-1558301211-0d8c8ddee6ec"),
+    u("photo-1563729784474-d77dbb933a9e"),
+    u("photo-1578985545062-69928b1d9587"),
+    u("photo-1621303837174-89787a7d4729"),
+    u("photo-1464349095431-e9a21285b5f3"),
+    u("photo-1587668178277-295251f900ce"),
+  ],
+
+  // Terno, smoking, alfaiataria masculina, noivo
+  "roupa-noivo": [
+    u("photo-1507679799987-c73b1d16a7e4"),
+    u("photo-1594938298603-c8148c4dae35"),
+    u("photo-1593032465175-481ac7f401a0"),
+    u("photo-1519085360753-af0119f7cbe7"),
+    u("photo-1620012253295-c15cc3e65df4"),
+    u("photo-1617137984095-74e4e5e3613f"),
+  ],
+
+  // Mesas, cadeiras, lounges, mobiliário de evento
+  mobiliario: [
+    u("photo-1519167758481-83f550bb49b3"),
+    u("photo-1464366400600-7168b8af9bc3"),
+    u("photo-1522413452208-996ff3f3e740"),
+    u("photo-1533174072545-7a4b6ad7a6c3"),
+    u("photo-1510076857177-7470076d4098"),
+    u("photo-1505236858219-8359eb29e329"),
+  ],
+
+  // Maquiagem, cabelo, dia da noiva, beleza
+  beleza: [
+    u("photo-1522335789203-aabd1fc54bc9"),
+    u("photo-1487412947147-5cebf100ffc2"),
+    u("photo-1560750588-73207b1ef5b8"),
+    u("photo-1596178065887-1198b6148b2b"),
+    u("photo-1512496015851-a90fb38ba796"),
+    u("photo-1457972729786-0411a3b2b626"),
+  ],
+
+  // Open bar, coquetelaria, drinks, bartender
+  bar: [
+    u("photo-1551024709-8f23befc6f87"),
+    u("photo-1470337458703-46ad1756a187"),
+    u("photo-1514362545857-3bc16c4c7d1b"),
+    u("photo-1536935338788-846bb9981813"),
+    u("photo-1575444758702-4a6b9222c016"),
+    u("photo-1556679343-c7306c1976bc"),
+  ],
 } as const;
 
 /**

@@ -39,7 +39,12 @@ export type CategorySlug =
   | "roupas-noiva"
   | "festa-musica"
   | "convites"
-  | "filmagem";
+  | "filmagem"
+  | "doces"
+  | "roupa-noivo"
+  | "mobiliario"
+  | "beleza"
+  | "bar";
 
 export type Category = {
   slug: CategorySlug;
