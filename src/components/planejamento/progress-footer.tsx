@@ -29,7 +29,7 @@ export function ProgressFooter() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border shadow-[0_-4px_20px_rgba(12,1,6,0.06)]"
+      className="fixed bottom-14 left-0 right-0 z-30 safe-px bg-background border-t border-border shadow-[0_-4px_20px_rgba(12,1,6,0.06)]"
       role="status"
       aria-label="Progresso do planejamento"
     >
