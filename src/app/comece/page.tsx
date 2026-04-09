@@ -399,6 +399,8 @@ export default function ComecePage() {
   async function inlineStartRecording() {
     setInlineError(null);
     setInlinePaused(false);
+    // Limpa timer anterior pra evitar múltiplos intervalos
+    if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       inlineStreamRef.current = stream;
@@ -435,6 +437,8 @@ export default function ComecePage() {
       inlineRecorderRef.current.resume();
     }
     setInlinePaused(false);
+    // Limpa timer anterior pra evitar múltiplos intervalos
+    if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
     inlineTimerRef.current = setInterval(() => {
       setInlineSeconds((s) => {
         if (s >= 179) { inlinePauseRecording(); return 180; }
@@ -449,6 +453,7 @@ export default function ComecePage() {
     setInlineProcessing(true);
     setInlinePaused(false);
     setInlineRecording(false);
+    setInlineSeconds(0);
     if (inlineTimerRef.current) { clearInterval(inlineTimerRef.current); inlineTimerRef.current = null; }
 
     // Parar o recorder gera o blob via onstop
@@ -604,18 +609,18 @@ export default function ComecePage() {
             <div className="flex flex-col gap-2 items-start">
               <button
                 type="button"
-                onClick={handleStartText}
-                className="inline-flex items-center justify-center min-h-12 px-7 py-3 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                onClick={handleStartAudio}
+                className="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-3 rounded-md bg-primary text-primary-foreground text-sm font-medium tracking-wide shadow-md shadow-primary/25 hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out"
               >
-                Responder por texto
+                <Mic className="size-4" />
+                Responder por áudio
               </button>
               <button
                 type="button"
-                onClick={handleStartAudio}
-                className="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-3 rounded-sm border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary transition-colors duration-200"
+                onClick={handleStartText}
+                className="inline-flex items-center justify-center gap-2 min-h-12 px-7 py-3 rounded-md border border-border bg-card text-foreground text-sm font-medium tracking-wide hover:border-primary hover:shadow-sm transition-all duration-300"
               >
-                <Mic className="size-4" />
-                Ver as perguntas e gravar um áudio
+                Prefiro digitar
               </button>
             </div>
           )}
@@ -663,7 +668,7 @@ export default function ComecePage() {
                 <button
                   type="button"
                   onClick={() => router.push("/planejamento")}
-                  className="inline-flex items-center justify-center min-h-14 px-8 md:px-10 py-4 rounded-sm bg-primary text-primary-foreground text-base md:text-lg font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 mt-4"
+                  className="inline-flex items-center justify-center min-h-14 px-8 md:px-10 py-4 rounded-md bg-primary text-primary-foreground text-base md:text-lg font-medium tracking-wide hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out mt-4"
                 >
                   Ver o caminho que montamos →
                 </button>
@@ -677,60 +682,131 @@ export default function ComecePage() {
 
       {/* Input do chat (campos do onboarding) — modo texto */}
       {hasStarted && !dreamMode && !audioMode && (
-        <form
-          onSubmit={handleSubmit}
-          className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border md:relative md:border-t-0 md:bg-transparent md:safe-bottom-0"
-        >
-          <div className="max-w-2xl mx-auto px-4 md:px-0 py-3 md:py-6 flex items-end gap-2">
-            <textarea
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
-              rows={1}
-              placeholder="Respondam aqui..."
-              enterKeyHint="send"
-              autoComplete="off"
-              disabled={isLoading}
-              className="flex-1 resize-none rounded-sm border border-border bg-background px-3 py-2.5 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 max-h-32 leading-normal overflow-hidden"
-              style={{ fontSize: "16px", height: "44px" }}
-            />
-            <button
-              type="button"
-              onClick={() => setAudioMode(true)}
-              disabled={isLoading}
-              className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
-              aria-label="Gravar áudio"
-            >
-              <Mic className="size-5" />
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading || !inputValue.trim()}
-              className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm bg-primary text-primary-foreground hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
-              aria-label="Enviar mensagem"
-            >
-              <svg
-                className="size-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 12h14m-7-7l7 7-7 7"
+        <div className="fixed bottom-0 left-0 right-0 z-30 safe-bottom safe-px bg-background border-t border-border">
+          <div className="max-w-2xl mx-auto px-4 md:px-0 py-3 md:py-6">
+            {/* Gravando/pausado/processando inline no modo texto */}
+            {inlineProcessing ? (
+              <div className="flex items-center justify-center gap-3 py-2">
+                <span className="text-[color:var(--brand-rose)] text-2xl animate-pulse-ornament">◇</span>
+                <span className="text-sm text-muted-foreground">Transcrevendo...</span>
+              </div>
+            ) : inlineRecording || inlinePaused ? (
+              <div className="flex items-center gap-3 w-full">
+                {/* Timer */}
+                <span className="font-display text-xl text-foreground tabular-nums min-w-[3.5rem] text-center">
+                  {Math.floor(inlineSeconds / 60)}:{(inlineSeconds % 60).toString().padStart(2, "0")}
+                </span>
+
+                {inlinePaused ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={inlineResumeRecording}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-11 rounded-sm border border-border bg-card text-foreground text-sm font-medium hover:border-primary transition-colors duration-200"
+                    >
+                      <Play className="size-4" />
+                      Retomar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={inlineSendRecording}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 min-h-11 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out"
+                    >
+                      <Send className="size-4" />
+                      Enviar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { inlineDiscardRecording(); inlineStartRecording(); }}
+                      className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200"
+                      aria-label="Recomeçar gravação"
+                    >
+                      <Mic className="size-4" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    {/* Barra de onda animada */}
+                    <div className="flex-1 flex items-center gap-[3px] h-8 px-2">
+                      {Array.from({ length: 24 }).map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="flex-1 rounded-full bg-primary/60"
+                          animate={{ height: ["4px", `${8 + Math.random() * 16}px`, "4px"] }}
+                          transition={{ duration: 0.6 + Math.random() * 0.6, repeat: Infinity, delay: i * 0.04 }}
+                        />
+                      ))}
+                    </div>
+                    <motion.button
+                      type="button"
+                      onClick={inlinePauseRecording}
+                      animate={{ scale: [1, 1.06, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-destructive text-white"
+                      aria-label="Pausar gravação"
+                    >
+                      <Pause className="size-4 fill-white" />
+                    </motion.button>
+                  </>
+                )}
+              </div>
+            ) : (
+              /* Input texto normal */
+              <form onSubmit={handleSubmit} className="flex items-end gap-2">
+                <textarea
+                  ref={inputRef}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit(e);
+                    }
+                  }}
+                  rows={1}
+                  placeholder="Respondam aqui..."
+                  enterKeyHint="send"
+                  autoComplete="off"
+                  disabled={isLoading}
+                  className="flex-1 resize-none rounded-sm border border-border bg-background px-3 py-2.5 text-base font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 max-h-32 leading-normal overflow-hidden"
+                  style={{ fontSize: "16px", height: "44px" }}
                 />
-              </svg>
-            </button>
+                <button
+                  type="button"
+                  onClick={inlineStartRecording}
+                  disabled={isLoading}
+                  className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-sm border border-border bg-card text-foreground hover:border-primary transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+                  aria-label="Gravar áudio"
+                >
+                  <Mic className="size-5" />
+                </button>
+                <button
+                  type="submit"
+                  disabled={isLoading || !inputValue.trim()}
+                  className="shrink-0 inline-flex items-center justify-center min-w-11 min-h-11 rounded-md bg-primary text-primary-foreground hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out disabled:opacity-40 disabled:pointer-events-none"
+                  aria-label="Enviar mensagem"
+                >
+                  <svg
+                    className="size-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 12h14m-7-7l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </form>
+            )}
+            {inlineError && (
+              <p className="text-sm text-destructive text-center mt-2">{inlineError}</p>
+            )}
           </div>
-        </form>
+        </div>
       )}
 
       {/* Gravador inline unificado — onboarding (audioMode) e sonho (dreamMode sem dreamTextMode) */}
@@ -759,7 +835,7 @@ export default function ComecePage() {
                   <button
                     type="button"
                     onClick={inlineSendRecording}
-                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                    className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-md bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out"
                   >
                     <Send className="size-4" />
                     Enviar
@@ -795,7 +871,7 @@ export default function ComecePage() {
                 <button
                   type="button"
                   onClick={inlineStartRecording}
-                  className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-sm bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200"
+                  className="w-full inline-flex items-center justify-center gap-3 min-h-14 px-8 py-4 rounded-md bg-primary text-primary-foreground text-base font-medium tracking-wide hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out"
                 >
                   <Mic className="size-5" />
                   Gravar áudio
@@ -834,7 +910,7 @@ export default function ComecePage() {
                 type="button"
                 onClick={handleDreamSubmit}
                 disabled={dreamText.trim().length < 20}
-                className="flex-1 inline-flex items-center justify-center min-h-12 px-6 rounded-sm bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine transition-colors duration-200 disabled:opacity-40 disabled:pointer-events-none"
+                className="flex-1 inline-flex items-center justify-center min-h-12 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-brand-wine hover:shadow-lg hover:-translate-y-[1px] active:translate-y-0 transition-all duration-300 ease-out disabled:opacity-40 disabled:pointer-events-none"
               >
                 Enviar →
               </button>
